@@ -6,7 +6,9 @@
 
 using namespace std;
 
-void FileManager::OpenFileExplorer()
+const char* convertPWSTRtoConstChar(PWSTR wideString);
+
+const char* FileManager::OpenFileExplorer()
 {
         // CoInitialize is needed to initialize the COM library
         CoInitialize(NULL);
@@ -45,14 +47,14 @@ void FileManager::OpenFileExplorer()
                         hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &filePath);
 
                         if (SUCCEEDED(hr)) {
-                            // Print the selected file path
-                            cout << "Selected file: %s\n" << filePath;
 
-                            //temporary pause to see print before window closes automatically
-                            Sleep(5000);
+                            // Convert PWSTR to const char*
+                            const char* narrowString = convertPWSTRtoConstChar(filePath);
 
-                            // Remember to free the allocated memory
-                            CoTaskMemFree(filePath);
+                            // Use the converted narrow string
+                            std::cout << "Narrow String: " << narrowString << std::endl;
+
+                            return narrowString;
                         }
 
                         pItem->Release();
@@ -66,4 +68,23 @@ void FileManager::OpenFileExplorer()
 
         // CoUninitialize to clean up the COM library
         CoUninitialize();
+}
+
+const char* convertPWSTRtoConstChar(PWSTR wideString) {
+    // Get the length of the wide string
+    int wideStringLength = lstrlenW(wideString);
+
+    // Calculate the required buffer size for the narrow string
+    int bufferSize = WideCharToMultiByte(CP_ACP, 0, wideString, wideStringLength, NULL, 0, NULL, NULL);
+
+    // Allocate memory for the narrow string
+    char* narrowString = new char[bufferSize + 1];  // +1 for null terminator
+
+    // Convert the wide string to narrow string
+    WideCharToMultiByte(CP_ACP, 0, wideString, wideStringLength, narrowString, bufferSize, NULL, NULL);
+
+    // Null-terminate the narrow string
+    narrowString[bufferSize] = '\0';
+
+    return narrowString;
 }

@@ -1,4 +1,8 @@
-﻿  MainWindow.cpp
+﻿  FileManager.cpp
+  FileManager.h
+  Generating Code...
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\FileManager.cpp(73): warning C4715: 'FileManager::OpenFileExplorer': not all control paths return a value
+x64\Debug\FileManager.obj : warning LNK4042: object specified more than once; extras ignored
   MusicVisualizer.vcxproj -> D:\Main\C++\GitHub\MusicVisualizer\x64\Debug\MusicVisualizer.exe
   'pwsh.exe' is not recognized as an internal or external command,
   operable program or batch file.

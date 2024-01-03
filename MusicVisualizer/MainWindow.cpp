@@ -3,7 +3,6 @@
 
 #define RAYGUI_IMPLEMENTATION
 #include <raygui.h>
-
 #include "FileManager.h"
 
 using namespace std;
@@ -24,7 +23,7 @@ int main() {
 
 		if (GuiButton(Rectangle_{600.0f, 600.0f, 160.0f, 28.0f }, "Open File")) {
 			cout << "button clicked" << endl;
-			File_Manager.OpenFileExplorer();
+			cout << File_Manager.OpenFileExplorer();
 		}
 
 		EndDrawing();

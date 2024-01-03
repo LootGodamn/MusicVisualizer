@@ -1,4 +1,4 @@
 class FileManager{
 public:
-    void OpenFileExplorer();
+    const char* OpenFileExplorer();
 };
