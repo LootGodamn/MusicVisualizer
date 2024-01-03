@@ -5,6 +5,8 @@
 #include <raygui.h>
 #include "FileManager.h"
 
+#include <aubio/aubio.h>
+
 using namespace std;
 
 FileManager File_Manager;
