@@ -1,3 +1,10 @@
+<h1>Dependencies</h1>
+<ul>
+  <li>Raylib for general functions and structs</li>
+  <li>Raygui for GUI rendering</li>
+  <li>Windows headers for system level process handling</li>
+</ul>
+
 <h1>To Do</h1>
 <h3>File Management</h3>
 <ul>
@@ -10,6 +17,8 @@
 <ul>
   <li>Bars</li>
   <li>Spline</li>
+  <li>Light streaks</li>
+  <li>Size change</li>
 </ul>
 <h4>Audio components</h4>
 <ul>
