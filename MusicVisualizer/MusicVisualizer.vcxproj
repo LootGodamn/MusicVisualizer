@@ -111,6 +111,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\Headers\aubio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,9 +134,13 @@
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="FileManager.h" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\aubio\aubio.h" />
+    <ClInclude Include="Headers\cyber\style_cyber.h" />
     <ClInclude Include="Headers\raygui.h" />
+    <ClInclude Include="SoundManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

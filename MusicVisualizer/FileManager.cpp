@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const char* convertPWSTRtoConstChar(PWSTR wideString);
+const char* convertPWSTRtoConstChar(PWSTR WideString);
 
 const char* FileManager::OpenFileExplorer()
 {
@@ -14,77 +14,77 @@ const char* FileManager::OpenFileExplorer()
         CoInitialize(NULL);
 
         // Create an instance of the File Open dialog
-        IFileDialog* pFileDialog;
-        HRESULT hr = CoCreateInstance(
+        IFileDialog* FileDialog;
+        HRESULT HResult = CoCreateInstance(
             CLSID_FileOpenDialog,
             NULL,
             CLSCTX_INPROC_SERVER,
-            IID_PPV_ARGS(&pFileDialog)
+            IID_PPV_ARGS(&FileDialog)
         );
 
-        if (SUCCEEDED(hr)) {
+        if (SUCCEEDED(HResult)) {
             // Set file type filters
-            COMDLG_FILTERSPEC fileTypes[] = {
+            COMDLG_FILTERSPEC FileTypes[] = {
                 { L"MP3 Files", L"*.mp3" },
                 { L"WAV Files", L"*.wav" },
                 { L"OGG Files", L"*.ogg" },
                 { L"FLAC Files", L"*.flac" },
                 { L"All Files", L"*.*" }
             };
-            hr = pFileDialog->SetFileTypes(_countof(fileTypes), fileTypes);
+            HResult = FileDialog->SetFileTypes(_countof(FileTypes), FileTypes);
 
-            if (SUCCEEDED(hr)) {
+            if (SUCCEEDED(HResult)) {
                 // Show the File Open dialog
-                hr = pFileDialog->Show(NULL);
+                HResult = FileDialog->Show(NULL);
 
-                if (SUCCEEDED(hr)) {
+                if (SUCCEEDED(HResult)) {
                     // Get the selected file(s)
-                    IShellItem* pItem;
-                    hr = pFileDialog->GetResult(&pItem);
+                    IShellItem* Item;
+                    HResult = FileDialog->GetResult(&Item);
 
-                    if (SUCCEEDED(hr)) {
-                        PWSTR filePath;
-                        hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &filePath);
+                    if (SUCCEEDED(HResult)) {
+                        PWSTR FilePath;
+                        HResult = Item->GetDisplayName(SIGDN_FILESYSPATH, &FilePath);
 
-                        if (SUCCEEDED(hr)) {
+                        if (SUCCEEDED(HResult)) {
 
                             // Convert PWSTR to const char*
-                            const char* narrowString = convertPWSTRtoConstChar(filePath);
+                            const char* NarrowString = convertPWSTRtoConstChar(FilePath);
 
                             // Use the converted narrow string
-                            std::cout << "Narrow String: " << narrowString << std::endl;
+                            std::cout << "Narrow String: " << NarrowString << std::endl;
 
-                            return narrowString;
+                            return NarrowString;
                         }
 
-                        pItem->Release();
+                        Item->Release();
                     }
                 }
             }
 
             // Release the File Open dialog
-            pFileDialog->Release();
+            FileDialog->Release();
         }
 
         // CoUninitialize to clean up the COM library
         CoUninitialize();
 }
 
-const char* convertPWSTRtoConstChar(PWSTR wideString) {
+const char* convertPWSTRtoConstChar(PWSTR WideString) {
     // Get the length of the wide string
-    int wideStringLength = lstrlenW(wideString);
+    int WideStringLength = lstrlenW(WideString);
 
     // Calculate the required buffer size for the narrow string
-    int bufferSize = WideCharToMultiByte(CP_ACP, 0, wideString, wideStringLength, NULL, 0, NULL, NULL);
+    int BufferSize = WideCharToMultiByte(CP_ACP, 0, WideString, WideStringLength, NULL, 0, NULL, NULL);
 
     // Allocate memory for the narrow string
-    char* narrowString = new char[bufferSize + 1];  // +1 for null terminator
+    char* NarrowString = new char[BufferSize + 1];  // +1 for null terminator
 
     // Convert the wide string to narrow string
-    WideCharToMultiByte(CP_ACP, 0, wideString, wideStringLength, narrowString, bufferSize, NULL, NULL);
+    WideCharToMultiByte(CP_ACP, 0, WideString, WideStringLength, NarrowString, BufferSize, NULL, NULL);
 
     // Null-terminate the narrow string
-    narrowString[bufferSize] = '\0';
+    NarrowString[BufferSize] = '\0';
 
-    return narrowString;
+    return NarrowString;
 }

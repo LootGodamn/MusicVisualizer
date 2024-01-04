@@ -1,7 +1,22 @@
-﻿  FileManager.cpp
-  FileManager.h
-  Generating Code...
-D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\FileManager.cpp(73): warning C4715: 'FileManager::OpenFileExplorer': not all control paths return a value
+﻿  MainWindow.cpp
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\Headers\cyber\style_cyber.h(21,13): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
+  (compiling source file 'MainWindow.cpp')
+  
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\Headers\cyber\style_cyber.h(23,13): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
+  (compiling source file 'MainWindow.cpp')
+  
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\Headers\cyber\style_cyber.h(24,13): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
+  (compiling source file 'MainWindow.cpp')
+  
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\Headers\cyber\style_cyber.h(25,13): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
+  (compiling source file 'MainWindow.cpp')
+  
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\Headers\cyber\style_cyber.h(26,13): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
+  (compiling source file 'MainWindow.cpp')
+  
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\Headers\cyber\style_cyber.h(32,14): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
+  (compiling source file 'MainWindow.cpp')
+  
 x64\Debug\FileManager.obj : warning LNK4042: object specified more than once; extras ignored
   MusicVisualizer.vcxproj -> D:\Main\C++\GitHub\MusicVisualizer\x64\Debug\MusicVisualizer.exe
   'pwsh.exe' is not recognized as an internal or external command,
