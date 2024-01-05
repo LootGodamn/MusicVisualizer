@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FileManager.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MainWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -32,13 +29,13 @@
     <ClInclude Include="Headers\raygui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SoundManager.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\aubio\aubio.h">
+    <ClInclude Include="Headers\cyber\style_cyber.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\cyber\style_cyber.h">
+    <ClInclude Include="Headers\FileManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\SoundManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
