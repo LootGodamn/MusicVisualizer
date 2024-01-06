@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <shobjidl.h>   // For IFileDialog
+#include <fstream>
 
 using namespace std;
 
@@ -87,4 +88,25 @@ const char* convertPWSTRtoConstChar(PWSTR WideString) {
     NarrowString[BufferSize] = '\0';
 
     return NarrowString;
+}
+
+int FileManager::file_size(const char* FilePath) {
+    // Open the file in binary mode
+    std::ifstream file(FilePath, std::ios::binary);
+
+    if (!file.is_open()) {
+        std::cerr << "Error opening file: " << FilePath << std::endl;
+        return -1;
+    }
+
+    // Get the file size
+    file.seekg(0, std::ios::end);
+    int fileSize = file.tellg();
+
+    std::cout << "File size: " << fileSize << " bytes" << std::endl;
+
+    // Close the file
+    file.close();
+
+    return fileSize;
 }

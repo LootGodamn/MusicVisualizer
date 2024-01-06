@@ -1,4 +1,23 @@
-﻿  SoundManager.cpp
+﻿  MainWindow.cpp
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\Headers\cyber\style_cyber.h(21,13): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
+  (compiling source file 'MainWindow.cpp')
+  
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\Headers\cyber\style_cyber.h(23,13): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
+  (compiling source file 'MainWindow.cpp')
+  
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\Headers\cyber\style_cyber.h(24,13): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
+  (compiling source file 'MainWindow.cpp')
+  
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\Headers\cyber\style_cyber.h(25,13): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
+  (compiling source file 'MainWindow.cpp')
+  
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\Headers\cyber\style_cyber.h(26,13): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
+  (compiling source file 'MainWindow.cpp')
+  
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\Headers\cyber\style_cyber.h(32,14): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
+  (compiling source file 'MainWindow.cpp')
+  
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\MainWindow.cpp(149,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   MusicVisualizer.vcxproj -> D:\Main\C++\GitHub\MusicVisualizer\x64\Debug\MusicVisualizer.exe
   'pwsh.exe' is not recognized as an internal or external command,
   operable program or batch file.

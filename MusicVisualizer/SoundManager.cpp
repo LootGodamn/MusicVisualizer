@@ -1,12 +1,17 @@
 #include <iostream>
 #include "SoundManager.h"
+#include "FileManager.h"
 #include <sndfile.h>
+#include <fstream>
 
 using namespace std;
 
 float *CompiledFrames;
 
-float* SoundManager::read_samples(const char* FilePath, int Fps) {
+float* SoundManager::read_samples(const char* FilePath, int Fps, int FileSize) {
+
+	if (FileSize < 0) return NULL;
+
 	// Reading Data from audio file
 
 	// Open the audio file
@@ -20,11 +25,9 @@ float* SoundManager::read_samples(const char* FilePath, int Fps) {
 	}
 
 	// Allocate buffer for audio samples
-	const int bufferSize = 3837788;
+	const int bufferSize = FileSize;
 	static float* buffer = new (std::nothrow) float[sfinfo.frames] {0};
-	CompiledFrames = new float[3837788 / Fps] {0};
-	cout << sfinfo.frames << endl;
-	cout << bufferSize << endl;
+	CompiledFrames = new float[FileSize / Fps] {0};
 
 	// Throw error if buffer fails to declare
 	if (!buffer) {
@@ -44,7 +47,6 @@ float* SoundManager::read_samples(const char* FilePath, int Fps) {
 	else {
 		// Process the audio samples in the 'buffer' array
 		for (sf_count_t i = 0; i < bytesRead; i += (sfinfo.samplerate / Fps)) {
-			cout << buffer[i] << endl;
 			CompiledFrames[i/60] = buffer[i];
 		}
 

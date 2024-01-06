@@ -1,5 +1,5 @@
 #pragma once
 class SoundManager {
 public:
-	float* read_samples(const char* FilePath, int Fps);
+	float* read_samples(const char* FilePath, int Fps, int FileSize);
 };
