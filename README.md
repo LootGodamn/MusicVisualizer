@@ -3,13 +3,12 @@
   <li>Raylib for general functions and structs</li>
   <li>Raygui for GUI rendering</li>
   <li>Windows headers for system level process handling</li>
+  <li>Libsndfile to read audio samples</li>
 </ul>
 
 <h1>To Do</h1>
 <h3>File Management</h3>
 <ul>
-  <li>Load selected audio file</li>
-  <li>Playback audio file</li>
   <li>Allow audio files to be cached in a list</li>
 </ul>
 <h3>Visualization</h3>
