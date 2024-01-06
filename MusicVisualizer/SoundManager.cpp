@@ -20,8 +20,11 @@ float* SoundManager::read_samples(const char* FilePath, int Fps) {
 	}
 
 	// Allocate buffer for audio samples
-	const int bufferSize = sfinfo.frames;
+	const int bufferSize = 3837788;
 	static float* buffer = new (std::nothrow) float[sfinfo.frames] {0};
+	CompiledFrames = new float[3837788 / Fps] {0};
+	cout << sfinfo.frames << endl;
+	cout << bufferSize << endl;
 
 	// Throw error if buffer fails to declare
 	if (!buffer) {
@@ -33,19 +36,16 @@ float* SoundManager::read_samples(const char* FilePath, int Fps) {
 	// Read audio samples into the buffer
 	// Buffer size cant be big enough -> Throws access violation error 
 	// Either buffer[] size too small or audio_file got too little frames
-	sf_count_t bytesRead = sf_readf_float(audio_file, buffer, sfinfo.samplerate);
+	sf_count_t bytesRead = sf_readf_float(audio_file, buffer, bufferSize);
 
 	if (bytesRead < 0) {
 		std::cerr << "Error reading audio samples: " << sf_strerror(audio_file) << std::endl;
 	}
 	else {
 		// Process the audio samples in the 'buffer' array
-		CompiledFrames = new float[Fps * (sfinfo.frames / sfinfo.samplerate)];
 		for (sf_count_t i = 0; i < bytesRead; i += (sfinfo.samplerate / Fps)) {
-			// Your processing logic here
 			cout << buffer[i] << endl;
 			CompiledFrames[i/60] = buffer[i];
-			// 'buffer[i]' contains the audio sample at index 'i'
 		}
 
 		std::cout << "Successfully read and processed " << bytesRead << " audio samples." << std::endl;
@@ -54,9 +54,6 @@ float* SoundManager::read_samples(const char* FilePath, int Fps) {
 	// Clean up data
 	delete[] buffer;
 	sf_close(audio_file);
-
-
-	cout << CompiledFrames;
 
 	return CompiledFrames;
 }
