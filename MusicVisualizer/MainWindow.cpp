@@ -138,7 +138,9 @@ bool viz_screen() {
 		AudioInitiated = false;
 	}
 
-	if (chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() - PastTime) >= MsPerFrame) {
+	auto DurationSincePast = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() - PastTime);
+
+	if (DurationSincePast >= MsPerFrame) {
 		if (ASampleIndex >= (FileSize / 4)) {
 			cout << "Done playing" << endl;
 			ASampleIndex = 0;
@@ -147,7 +149,7 @@ bool viz_screen() {
 		else
 		{
 			float size = (CompiledSamples[ASampleIndex] + 5.5) * 150;
-			cout << size << endl;
+			cout << DurationSincePast.count() << endl;
 			GuiDrawRectangle(Rectangle_{ 0, 0, size, size }, 15, WHITE, DARKGRAY);
 			ASampleIndex++;
 		}

@@ -101,7 +101,7 @@ int FileManager::file_size(const char* FilePath) {
 
     // Get the file size
     file.seekg(0, std::ios::end);
-    int fileSize = file.tellg();
+    int fileSize = static_cast<int>(file.tellg());
 
     std::cout << "File size: " << fileSize << " bytes" << std::endl;
 

@@ -25,6 +25,7 @@ float* SoundManager::read_samples(const char* FilePath, int Fps, int FileSize) {
 	}
 
 	// Allocate buffer for audio samples
+	
 	const int bufferSize = FileSize;
 	static float* buffer = new (std::nothrow) float[sfinfo.frames] {0};
 	CompiledFrames = new float[FileSize / Fps] {0};
@@ -45,9 +46,11 @@ float* SoundManager::read_samples(const char* FilePath, int Fps, int FileSize) {
 		std::cerr << "Error reading audio samples: " << sf_strerror(audio_file) << std::endl;
 	}
 	else {
+		int SampleSkipRate = sfinfo.samplerate / Fps;
 		// Process the audio samples in the 'buffer' array
-		for (sf_count_t i = 0; i < bytesRead; i += (sfinfo.samplerate / Fps)) {
-			CompiledFrames[i/60] = buffer[i];
+		for (sf_count_t i = 0; i < bytesRead; i += SampleSkipRate) {
+			CompiledFrames[i / Fps] = buffer[i];
+			cout << CompiledFrames[i / Fps] << endl;
 		}
 
 		std::cout << "Successfully read and processed " << bytesRead << " audio samples." << std::endl;
