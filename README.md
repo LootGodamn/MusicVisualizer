@@ -1,3 +1,10 @@
+<h1>Current Limitations</h1>
+<h4>The audio file selected can only be:</h4>
+<ul>
+  <li>44100 Hz / 128 Kbps</li>
+  <li>in .mp3 format</li>
+</ul>
+
 <h1>Dependencies</h1>
 <ul>
   <li>Raylib for general functions and structs</li>
