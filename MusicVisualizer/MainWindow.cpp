@@ -90,7 +90,7 @@ bool main_screen() {
 
 		if (FilePath == NULL) { cerr << "File failed to load\n"; return false; }
 
-		CompiledSamples = Sound_Manager.read_samples(FilePath, 60, FileSize = File_Manager.file_size(FilePath));
+		CompiledSamples = Sound_Manager.read_samples(FilePath, 60);
 
 		if (CompiledSamples != NULL) {
 			cout << "Success loading data" << endl;

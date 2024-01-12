@@ -8,9 +8,7 @@ using namespace std;
 
 float *CompiledFrames;
 
-float* SoundManager::read_samples(const char* FilePath, int Fps, int FileSize) {
-
-	if (FileSize < 0) return NULL;
+float* SoundManager::read_samples(const char* FilePath, int Fps) {
 
 	// Reading Data from audio file
 
@@ -24,11 +22,12 @@ float* SoundManager::read_samples(const char* FilePath, int Fps, int FileSize) {
 		return NULL;
 	}
 
+	const int Channels = sfinfo.channels;
+
 	// Allocate buffer for audio samples
-	
-	const int bufferSize = FileSize;
-	static float* buffer = new (std::nothrow) float[sfinfo.frames] {0};
-	CompiledFrames = new float[FileSize / Fps] {0};
+	const int bufferSize = sfinfo.frames;
+	static float* buffer = new (std::nothrow) float[bufferSize * Channels] {0};
+	CompiledFrames = new float[bufferSize / Fps] {0};
 
 	// Throw error if buffer fails to declare
 	if (!buffer) {
@@ -49,8 +48,10 @@ float* SoundManager::read_samples(const char* FilePath, int Fps, int FileSize) {
 		int SampleSkipRate = sfinfo.samplerate / Fps;
 		// Process the audio samples in the 'buffer' array
 		for (sf_count_t i = 0; i < bytesRead; i += SampleSkipRate) {
-			CompiledFrames[i / Fps] = buffer[i];
-			cout << CompiledFrames[i / Fps] << endl;
+			if (i < bytesRead) {
+				CompiledFrames[i / Fps] = buffer[i * Channels];
+				cout << CompiledFrames[i / Fps] << endl;
+			}
 		}
 
 		std::cout << "Successfully read and processed " << bytesRead << " audio samples." << std::endl;
