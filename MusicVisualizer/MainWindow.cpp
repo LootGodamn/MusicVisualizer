@@ -27,7 +27,6 @@ int ScreenH;
 int ScreenW;
 
 float* CompiledSamples;
-int FileSize;
 
 const char* FilePath;
 
@@ -102,9 +101,7 @@ bool main_screen() {
 }
 
 int ASampleIndex = 0;
-int ArraySize;
 
-int frames_elapsed;
 chrono::milliseconds MsPerFrame(15);
 
 auto PastTime = chrono::system_clock::now();
@@ -127,35 +124,31 @@ bool viz_screen() {
 
 		if (IsSoundReady(LoadedSound) && !IsSoundPlaying(LoadedSound)) {
 			PlaySound(LoadedSound);
+
+			PastTime = chrono::system_clock::now();
 		}
 	}
 
-	if (IsKeyPressed(81) && AudioInitiated) {
+	/*if (IsKeyPressed(81) && AudioInitiated) {
 		cout << "Key detected\n";
 		StopSound(LoadedSound);
 		UnloadSound(LoadedSound);
 		CloseAudioDevice();
 		AudioInitiated = false;
-	}
+	}*/
 
 	auto DurationSincePast = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() - PastTime);
 
-	if (DurationSincePast >= MsPerFrame) {
-		if (ASampleIndex >= (FileSize / 4)) {
-			cout << "Done playing" << endl;
-			ASampleIndex = 0;
-			return false;
-		}
-		else
-		{
-			float size = (CompiledSamples[ASampleIndex] + 5.5) * 150;
-			cout << DurationSincePast.count() << endl;
-			GuiDrawRectangle(Rectangle_{ 0, 0, size, size }, 15, WHITE, DARKGRAY);
-			ASampleIndex++;
-		}
-
-		frames_elapsed++;
-		PastTime = chrono::system_clock::now();
+	try {
+		float size = (CompiledSamples[ASampleIndex] + 5.5) * 150;
+		cout << ASampleIndex << endl;
+		GuiDrawRectangle(Rectangle_{ 0, 0, size, size }, 15, WHITE, DARKGRAY);
+		ASampleIndex = (floor(DurationSincePast.count() / 1000.0f) * 60) + ceil((DurationSincePast.count() % 1000) / 16.667f);
+	}
+	catch(int error){
+		cout << "Done playing " << error << endl;
+		ASampleIndex = 0;
+		return false;
 	}
 
 	return true;
