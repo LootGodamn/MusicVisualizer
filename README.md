@@ -1,10 +1,3 @@
-<h1>Current Limitations</h1>
-<h4>The audio file selected can only be:</h4>
-<ul>
-  <li>44100 Hz / 128 Kbps</li>
-  <li>in .mp3 format</li>
-</ul>
-
 <h1>Dependencies</h1>
 <ul>
   <li>Raylib for general functions and structs</li>
@@ -19,6 +12,11 @@
   <li>Allow audio files to be cached in a list</li>
 </ul>
 <h3>Visualization</h3>
+<ul>
+  <li>Normalize Amplitude for more uniform responses</li>
+  <li>Make a proper display for Amp viz</li>
+  <li>Fix raygui rendering overlaps on constant update</li>
+</ul>
 <h4>Viz types</h4>
 <ul>
   <li>Bars</li>
