@@ -106,7 +106,7 @@ chrono::milliseconds MsPerFrame(15);
 
 auto PastTime = chrono::system_clock::now();
 
-float Size = 500.0f;
+float Size = 200.0f;
 float Strength = 25.0f;
 float FadeAmount = 2.0f;
 
@@ -142,10 +142,10 @@ bool viz_screen() {
 	auto DurationSincePast = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() - PastTime);
 
 	try {
-		if (CompiledSamples[ASampleIndex] >= 0.001f) Size = 500 + (CompiledSamples[ASampleIndex] * Strength);
+		if (CompiledSamples[ASampleIndex] >= 0.001f) Size = 200 + (CompiledSamples[ASampleIndex] * Strength);
 		if(Size > 500.0f)  Size -= FadeAmount;
 		ASampleIndex = (floor(DurationSincePast.count() / 1000.0f) * 60) + ceil((DurationSincePast.count() % 1000) / 16.667f);
-		GuiDrawRectangle(Rectangle_{ 0, 0, Size, Size}, 15, WHITE, DARKGRAY);
+		DrawCircle(ScreenW / 2, ScreenH / 2,Size,WHITE);
 	}
 	catch(int error){
 		cout << "Done playing " << error << endl;
