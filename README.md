@@ -14,7 +14,6 @@
 <h3>Visualization</h3>
 <ul>
   <li>Normalize Amplitude for more uniform responses</li>
-  <li>Make a proper display for Amp viz</li>
   <li>Fix raygui rendering overlaps on constant update</li>
 </ul>
 <h4>Viz types</h4>
