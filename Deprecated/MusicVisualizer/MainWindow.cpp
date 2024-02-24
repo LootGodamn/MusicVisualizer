@@ -38,7 +38,7 @@ int main() {
 	ScreenH = GetScreenHeight();
 	ScreenW = GetScreenWidth();
 	SetWindowSize(ScreenW, ScreenH);
-
+	
 	GuiLoadStyleCyber();
 
 	// Specify the time in seconds

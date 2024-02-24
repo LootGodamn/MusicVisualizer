@@ -1,13 +1,7 @@
-﻿  SoundManager.cpp
-D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(32,31): warning C4244: 'initializing': conversion from 'sf_count_t' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(32,23): warning C4244: 'initializing': conversion from 'sf_count_t' to 'const int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(68,39): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(69,40): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(70,42): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(79,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(79,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(79,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(79,24): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-  MusicVisualizer.vcxproj -> D:\Main\C++\GitHub\MusicVisualizer\x64\Debug\MusicVisualizer.exe
-  'pwsh.exe' is not recognized as an internal or external command,
-  operable program or batch file.
+﻿  FileManager.cpp
+D:\Main\C++\GitHub\MusicVisualizer\Deprecated\MusicVisualizer\FileManager.cpp(1,10): error C1083: Cannot open include file: 'FileManager.h': No such file or directory
+  MainWindow.cpp
+D:\Main\C++\GitHub\MusicVisualizer\Deprecated\MusicVisualizer\MainWindow.cpp(6,10): error C1083: Cannot open include file: 'raygui.h': No such file or directory
+  SoundManager.cpp
+D:\Main\C++\GitHub\MusicVisualizer\Deprecated\MusicVisualizer\SoundManager.cpp(2,10): error C1083: Cannot open include file: 'SoundManager.h': No such file or directory
+  Generating Code...
