@@ -1,0 +1,13 @@
+﻿  SoundManager.cpp
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(32,31): warning C4244: 'initializing': conversion from 'sf_count_t' to 'int', possible loss of data
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(32,23): warning C4244: 'initializing': conversion from 'sf_count_t' to 'const int', possible loss of data
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(68,39): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(69,40): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(70,42): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(79,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(79,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(79,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\Main\C++\GitHub\MusicVisualizer\MusicVisualizer\SoundManager.cpp(79,24): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  MusicVisualizer.vcxproj -> D:\Main\C++\GitHub\MusicVisualizer\x64\Debug\MusicVisualizer.exe
+  'pwsh.exe' is not recognized as an internal or external command,
+  operable program or batch file.
