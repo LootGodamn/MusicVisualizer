@@ -128,6 +128,7 @@ int mainscreen(){
 	GuiPanel(Rectangle_{ (ScreenSize.x / 3.0f) * 2, 0, ScreenSize.x / 3.0f , ScreenSize.y * 1.0f }, "Element Selection");
 
 	//File reading
+	/// \todo Only one file can be loaded per run. User should be able to open another file without errors while a file is already loaded
 	if (GuiButton(Rectangle_{ 14.0f, 34.0f, 160.0f, 28.0f }, "Open File")) {
 
 		FilePath = NULL;
@@ -192,10 +193,11 @@ int VizLineAmount = 10;
 int VizLineHeights[10];
 int VizState = 0;
 
+chrono::system_clock::time_point PastTime;
 int CurrentSampleIndex = 0;
 
-auto PastTime = chrono::system_clock::now();
 bool AudioInitiated = false;
+Sound LoadedSound = Sound{};
 
 int vizscreen() {
 	DrawRectangle(0, 0, ScreenSize.x, ScreenSize.y, Color{ 10, 10, 10, 255});
@@ -203,23 +205,8 @@ int vizscreen() {
 	if (!SamplesReady) return 2;
 
 	switch (VizState) {
-	case 0:
-		for (int i = 0; i < VizLineAmount; i++) {
-			VizLineHeights[i] = 5;
-		}
-		VizState = 1;
-		break;
-	case 1:
-
-		//Button to switch screens
-		if (GuiButton(Rectangle_{ (ScreenSize.x / 2) - 80, (ScreenSize.y / 1.1f), 160.0f, 35.0f }, "Start Viz")) {
-			VizState = 2;
-		}
-		break;
-	case 2:
-
-		Sound LoadedSound = Sound{};
-
+	
+	case 0: // Initalizing stage
 		if (!AudioInitiated) {
 			InitAudioDevice();
 
@@ -230,15 +217,39 @@ int vizscreen() {
 
 			LoadedSound = LoadSound(FilePath);
 			SetSoundVolume(LoadedSound, 0.2f);
+		}
 
+		for (int i = 0; i < VizLineAmount; i++) {
+			VizLineHeights[i] = 5;
+		}
+		VizState = 1;
+		break;
+	case 1: // StandBy stage (wait player to start play)
+
+		//Button to switch screens
+		if (GuiButton(Rectangle_{ 24, 12, 160.0f, 35.0f }, "Back")) {
+			CurrentScreen = 0;
+			VizState = 0;
+		}
+
+		// Play Music and Visuals
+		if (GuiButton(Rectangle_{ (ScreenSize.x / 2) - 12, (ScreenSize.y / 1.25f), 24, 24 }, GuiIconText(131, ""))) {
+			
+			VizState = 0;
 			if (IsSoundReady(LoadedSound) && !IsSoundPlaying(LoadedSound)) {
 				PlaySound(LoadedSound);
-
 				PastTime = chrono::system_clock::now();
+				VizState = 2;
 			}
 		}
-		else if (GuiButton(Rectangle_{(ScreenSize.x / 2) - 12, (ScreenSize.y / 1.25f), 24, 24}, GuiIconText(131, ""))) {
-			/// Pause Music and Visuals
+
+		break;
+	case 2: // Playing in progress
+		if (GuiButton(Rectangle_{(ScreenSize.x / 2) - 12, (ScreenSize.y / 1.25f), 24, 24}, GuiIconText(133, ""))) {
+			// Stop Music and Visuals
+			StopSound(LoadedSound);
+			VizState = 0;
+			CurrentSampleIndex = 0;
 		}
 
 		auto DurationSincePast = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() - PastTime);
@@ -255,7 +266,6 @@ int vizscreen() {
 			for (int i = 0; i < VizLineAmount; i++) {
 
 				/// \todo Remap amplitude values using largest and smallest to a reasonable range.
-				/// \todo Let user pause and rewind audio + visual playback
 
 				DrawRectangle((ScreenSize.x / 2) + (i * 20) - ((VizLineAmount / 2.0f) * 20), ScreenSize.y / 2, 15, ceil(CompiledSamples[CurrentSampleIndex + i] * 1000), RAYWHITE);
 			}
