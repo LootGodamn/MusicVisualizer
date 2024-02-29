@@ -1,9 +1,16 @@
 #include <iostream>
+#include <chrono>
+#include <filesystem>
 using namespace std;
+namespace fs = std::filesystem;
+
+#include "FileManager.h"
+#include "SoundManager.h"
+#include <sndfile.h>
 
 #include "raylib.h"
-#define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
+
 #include "cyber/style_cyber.h"
 
 
@@ -12,6 +19,27 @@ int CurrentScreen = 0;
 
 int mainscreen();
 int vizscreen();
+void timedtext(int Duration, const char* DisplayText);
+int fileexists(const fs::path& p, fs::file_status s = fs::file_status{});
+
+FileManager File_Manager;
+SoundManager Sound_Manager;
+const char* FilePath;
+
+int bufferSize = 0;
+
+float* CompiledSamples;
+float* PitchSamples;
+float* LoudnessSamples;
+
+int fps = 120;
+
+float largest_ = -10000;
+float smallest_ = 10000;
+float* largest = &largest_;
+float* smallest = &smallest_;
+
+bool SamplesReady = false;
 
 int main() {
 	//Setting window properties
@@ -23,24 +51,41 @@ int main() {
 
 	//Refocus Window to fit height
 	SetWindowState(STATE_DISABLED);
-	SetWindowState(STATE_FOCUSED);
 
 	GuiLoadStyleCyber();
 
 	cout << ScreenSize.y << "|" << ScreenSize.x << endl;
 
-	//Main loop
+	SetWindowState(STATE_FOCUSED);
+
+	//Screen selection
 	while (!WindowShouldClose()) {
 
 		BeginDrawing();
 
 		switch (CurrentScreen) {
 		case 0:
-			if (mainscreen() == 1) return 1;
+			switch (mainscreen()) {
+			case 1:
+				return 1;
+				break;
+			case 2:
+				timedtext(1, "NO FILE SELECTED");
+				break;
+			}
+			break;
 			break;
 
 		case 1:
-			if (vizscreen() == 1) return 1;
+			switch (vizscreen()) {
+			case 1:
+				return 1;
+				break;
+			case 2:
+				CurrentScreen = 0;
+				timedtext(1, "NO AUDIO FILE LOADED");
+				break;
+			}
 			break;
 		}
 
@@ -49,6 +94,31 @@ int main() {
 
 	CloseWindow();
 	return 0;
+}
+
+void timedtext(int Duration, const char* DisplayText) {
+
+	EndDrawing();
+
+	auto TextBeginTime = chrono::system_clock::now();
+	chrono::seconds TimeSinceBeginning = chrono::seconds(0);
+
+	while (TimeSinceBeginning.count() < Duration) {
+		TimeSinceBeginning = chrono::duration_cast<chrono::seconds>(chrono::system_clock::now() - TextBeginTime);
+		BeginDrawing();
+		DrawRectangle(0, 0, ScreenSize.x, ScreenSize.y, Color{ 10, 10, 10, 255});
+		DrawTextEx(GetFontDefault(), DisplayText, Vector2{ (ScreenSize.x / 2) - 120, (ScreenSize.y / 2) - 10 }, 20, 1, RAYWHITE);
+		EndDrawing();
+	}
+}
+
+int fileexists(const fs::path& p, fs::file_status s)
+{
+	std::cout << p;
+	if (fs::status_known(s) ? fs::exists(s) : fs::exists(p))
+		return 0;
+	else
+		return 1;
 }
 
 int mainscreen(){
@@ -60,18 +130,155 @@ int mainscreen(){
 	//File reading
 	if (GuiButton(Rectangle_{ 14.0f, 34.0f, 160.0f, 28.0f }, "Open File")) {
 
-		cout << "WAT" << endl;
+		FilePath = NULL;
+
+		cout << "File window opened" << endl;
+
+		FilePath = File_Manager.OpenFileExplorer();
+
+		/// \todo IT KEEPS THROWING AN ERROR I CANT CATCH WHEN USER DOESNT CHOOSE ANY FILE
+		try {
+			if (fileexists(FilePath) == 1) {
+				timedtext(2, "ERROR, NO FILE SELECTED OR INVALID SELECTION");
+				return 0;
+			}
+		}
+		catch (int error) {
+			timedtext(2, "ERROR, NO FILE SELECTED OR INVALID SELECTION");
+			return 0;
+		}
+
+		/// Open the audio file
+
+		SNDFILE* audio_file;
+		SF_INFO sfinfo;
+		
+		audio_file = sf_open(FilePath, SFM_READ, &sfinfo);
+
+		/// Throw error if file not loaded
+		if (!audio_file) {
+			std::cerr << "Error opening the file: " << sf_strerror(nullptr) << std::endl;
+			return 1;
+		}
+		
+		const int Channels = sfinfo.channels;
+
+		/// Allocate buffer for audio samples
+		bufferSize = sfinfo.frames;
+		cout << bufferSize / Channels << endl;
+
+		CompiledSamples = new float[bufferSize / Channels];
+
+		sf_close(audio_file);
+
+		EndDrawing();
+		if (Sound_Manager.readsamples(FilePath, CompiledSamples, ScreenSize.x, ScreenSize.y, fps, largest, smallest) == 1) return 1;
+		else SamplesReady = true;
+
+		if (CompiledSamples != NULL) cout << "Success loading data" << endl;
+
+		cout << *largest << " | " << *smallest << endl;
 	}
 
 	//Button to switch screens
-	if (GuiButton(Rectangle_{ ScreenSize.x / 2, 64.0f, 160.0f, 28.0f }, "Viz Screen")) {
-		if (CurrentScreen == 0) CurrentScreen = 1;
-		else CurrentScreen = 0;
+	if (GuiButton(Rectangle_{ (ScreenSize.x / 2) - 80, (ScreenSize.y / 1.25f), 160.0f, 35.0f }, "Viz Screen")){
+		CurrentScreen = 1;
 	}
 
 	return 0;
 }
 
+int VizLineAmount = 10;
+int VizLineHeights[10];
+int VizState = 0;
+
+int CurrentSampleIndex = 0;
+
+auto PastTime = chrono::system_clock::now();
+bool AudioInitiated = false;
+
 int vizscreen() {
+	DrawRectangle(0, 0, ScreenSize.x, ScreenSize.y, Color{ 10, 10, 10, 255});
+
+	if (!SamplesReady) return 2;
+
+	switch (VizState) {
+	case 0:
+		for (int i = 0; i < VizLineAmount; i++) {
+			VizLineHeights[i] = 5;
+		}
+		VizState = 1;
+		break;
+	case 1:
+
+		//Button to switch screens
+		if (GuiButton(Rectangle_{ (ScreenSize.x / 2) - 80, (ScreenSize.y / 1.1f), 160.0f, 35.0f }, "Start Viz")) {
+			VizState = 2;
+		}
+		break;
+	case 2:
+
+		Sound LoadedSound = Sound{};
+
+		if (!AudioInitiated) {
+			InitAudioDevice();
+
+			if (!IsAudioDeviceReady()) { cout << "Audio device unable to initialize" << endl; return false; }
+
+			AudioInitiated = true;
+			cout << "Audio Initiated\n";
+
+			LoadedSound = LoadSound(FilePath);
+			SetSoundVolume(LoadedSound, 0.2f);
+
+			if (IsSoundReady(LoadedSound) && !IsSoundPlaying(LoadedSound)) {
+				PlaySound(LoadedSound);
+
+				PastTime = chrono::system_clock::now();
+			}
+		}
+		else if (GuiButton(Rectangle_{(ScreenSize.x / 2) - 12, (ScreenSize.y / 1.25f), 24, 24}, GuiIconText(131, ""))) {
+			/// Pause Music and Visuals
+		}
+
+		auto DurationSincePast = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() - PastTime);
+
+		try {
+			CurrentSampleIndex = (floor(DurationSincePast.count() / 1000.0f) * fps) + ceil((DurationSincePast.count() % 1000) / 16.667f);
+			cout << CompiledSamples[CurrentSampleIndex] << endl;
+
+			if (CurrentSampleIndex >= bufferSize / fps) {
+				cout << "Finished Playing" << endl;
+				return 0;
+			}
+
+			for (int i = 0; i < VizLineAmount; i++) {
+
+				/// \todo Remap amplitude values using largest and smallest to a reasonable range.
+				/// \todo Let user pause and rewind audio + visual playback
+
+				DrawRectangle((ScreenSize.x / 2) + (i * 20) - ((VizLineAmount / 2.0f) * 20), ScreenSize.y / 2, 15, ceil(CompiledSamples[CurrentSampleIndex + i] * 1000), RAYWHITE);
+			}
+		}
+		catch (int error) {
+			cout << "An Error occured while processing visuals : " << error << endl;
+
+			/// All just to close playback and visuals
+			StopSound(LoadedSound);
+			UnloadSound(LoadedSound);
+			CloseAudioDevice();
+			AudioInitiated = false;
+			CurrentSampleIndex = 0;
+			delete[] CompiledSamples;
+			delete[] PitchSamples;
+			delete[] LoudnessSamples;
+
+			return 1;
+		}
+
+		break;
+	}
+	
+	//DrawTextEx(GetFontDefault(), "WORK IN PROGRESS", Vector2{ (ScreenSize.x / 2) - 80, (ScreenSize.y / 2) - 10 }, 20, 1, RAYWHITE);
 	return 0;
 }

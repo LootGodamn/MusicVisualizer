@@ -1,5 +1,5 @@
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\x64\Debug\Muviz.vcxproj.CopyComplete
 D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\x64\Debug\Muviz.exe
+D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\x64\Debug\Muviz.vcxproj.CopyComplete
 D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\x64\Debug\raylib.dll
 D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\x64\Debug\sndfile.dll
 D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\x64\Debug\vorbisenc.dll

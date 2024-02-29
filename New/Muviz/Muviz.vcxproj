@@ -104,7 +104,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\icons;D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Headers\FileManager.h" />
+    <ClInclude Include="Headers\icons\raygui_icons.h" />
     <ClInclude Include="Headers\raygui.h" />
     <ClInclude Include="Headers\SoundManager.h" />
   </ItemGroup>
@@ -136,6 +138,12 @@
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="SoundManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Headers\icons\raygui_icons.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Headers\icons\raygui_icons.rgi" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

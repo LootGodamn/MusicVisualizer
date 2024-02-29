@@ -24,6 +24,9 @@
     <ClInclude Include="Headers\raygui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\icons\raygui_icons.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileManager.cpp">
@@ -35,5 +38,15 @@
     <ClCompile Include="MainWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Headers\icons\raygui_icons.png">
+      <Filter>Header Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Headers\icons\raygui_icons.rgi">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

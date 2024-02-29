@@ -48,7 +48,6 @@ const char* FileManager::OpenFileExplorer()
                         HResult = Item->GetDisplayName(SIGDN_FILESYSPATH, &FilePath);
 
                         if (SUCCEEDED(HResult)) {
-
                             // Convert PWSTR to const char*
                             const char* NarrowString = convertPWSTRtoConstChar(FilePath);
 
