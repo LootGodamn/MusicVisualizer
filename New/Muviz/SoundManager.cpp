@@ -4,6 +4,8 @@
 
 #include <sndfile.h>
 #include <fstream>
+#include <fftw-3.3.5-dll64/fftw3.h>
+#include <cmath>
 
 #include "raylib.h"
 #define RAYGUI_IMPLEMENTATION
@@ -12,8 +14,9 @@
 using namespace std;
 
 Color TranslucentOverlay = Color{ 10, 10, 10, 100 };
+const int numFrequencyBins = 10;
 
-int SoundManager::readsamples(const char* FilePath, float* TargetArray, int ScreenW, int ScreenH, int fps, float* largest, float* smallest) {
+int SoundManager::readsamples(const char* FilePath, float** TargetArray, int ScreenW, int ScreenH, int fps, float* largest, float* smallest) {
 
 	/// >Reading Data from audio file --------------------------------------------------------------
 		/// Read audio samples into the buffer
@@ -76,7 +79,8 @@ int SoundManager::readsamples(const char* FilePath, float* TargetArray, int Scre
 
 				float SampleAvg = SampleSum / fps;
 
-				TargetArray[i / SampleSkipRate] = SampleAvg;
+				TargetArray[0][i / SampleSkipRate] = SampleAvg;
+
 				if (*largest < SampleAvg) *largest = SampleAvg;
 				if (*smallest > SampleAvg) *smallest = SampleAvg;
 			}
@@ -84,13 +88,60 @@ int SoundManager::readsamples(const char* FilePath, float* TargetArray, int Scre
 
 		cout << bufferSize << endl;
 
+	/// > FAST FOURIER TRANSFORM ------------------------------------------------------------------------------------------------------------------------------
+
+		int FreqCalcSkipRate = sfinfo.samplerate / 4;
+
+		// Initialize FFTW plan
+		fftwf_complex* in = (fftwf_complex*)fftwf_malloc(sizeof(fftwf_complex) * FreqCalcSkipRate);
+		for (int i = 0; i < FreqCalcSkipRate; i++) {
+			in[i][0] = 0;
+			in[i][1] = 0; 
+		}
+
+		fftwf_complex* out = (fftwf_complex*)fftwf_malloc(sizeof(fftwf_complex) * FreqCalcSkipRate);
+
+		// Loop through the entire array
+
+		fftwf_plan plan = fftwf_plan_dft_1d(FreqCalcSkipRate, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+
+		for (int i = 0; i < ArraySize; i += FreqCalcSkipRate) {
+			// Ensure that we don't go beyond the end of the array
+			int EndIndex = std::min(i + FreqCalcSkipRate, ArraySize);
+
+			// Access and print the {fps} elements in between
+			for (int j = i; j < EndIndex; ++j) {
+				in[j - i][0] = buffer[j];
+			}
+
+			fftwf_execute(plan);
+
+			// Output the values of 10 different frequency bins
+			for (int bin = 0; bin < numFrequencyBins; ++bin) {
+				// Frequency calculation: bin * (sampling rate / array size)
+				//double frequency = static_cast<double>(bin) * (sfinfo.samplerate / ArraySize);
+
+				/// >IF Freq is inaccurate, change (fps / 2) to sfinfo.samplerate
+				int binIndex = bin * FreqCalcSkipRate / numFrequencyBins;
+				float Magnitude = sqrt(out[binIndex][0] * out[binIndex][0] + out[binIndex][1] * out[binIndex][1]);
+				
+				TargetArray[bin + 1][i / FreqCalcSkipRate] = Magnitude;
+
+				std::cout << "Bin " << bin << ": Magnitude = " << Magnitude << "\n";
+			}
+		}
+		
+		fftwf_destroy_plan(plan);
+		
+		fftwf_free(in);
+		fftwf_free(out);
+
+	/// > FAST FOURIER TRANSFORM ----------------------------------------------------------------------------------------------------------------------------------
+
 		std::cout << "Successfully read and processed " << bytesRead << " audio samples." << std::endl;
 		sf_close(File);
 		EnableCursor();
+		delete[] buffer;
 		return 0;
 	}
 }
-
-int* SoundManager::findpitch(const char* FilePath, int Hz) { return 0; }
-int* SoundManager::findloudness(const char* FilePath, int Hz) { return 0; }
-int* SoundManager::freedata() { return 0; }

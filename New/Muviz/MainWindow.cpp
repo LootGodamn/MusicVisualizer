@@ -26,9 +26,9 @@ FileManager File_Manager;
 SoundManager Sound_Manager;
 const char* FilePath;
 
-int bufferSize = 0;
+int bufferSize;
 
-float* CompiledSamples;
+float** CompiledSamples;
 float* PitchSamples;
 float* LoudnessSamples;
 
@@ -168,7 +168,10 @@ int mainscreen(){
 		bufferSize = sfinfo.frames;
 		cout << bufferSize / Channels << endl;
 
-		CompiledSamples = new float[bufferSize / Channels];
+		CompiledSamples = new float*[11];
+		for (int i = 0; i < 11; ++i){
+			CompiledSamples[i] = new float[bufferSize / Channels];
+		}
 
 		sf_close(audio_file);
 
@@ -190,7 +193,6 @@ int mainscreen(){
 }
 
 int VizLineAmount = 10;
-int VizLineHeights[10];
 int VizState = 0;
 
 chrono::system_clock::time_point PastTime;
@@ -198,6 +200,11 @@ int CurrentSampleIndex = 0;
 
 bool AudioInitiated = false;
 Sound LoadedSound = Sound{};
+
+float CircleRadius = 75.0f;
+float BaseCircleRadius = 75.0f;
+int CircleRange = 25;
+chrono::system_clock::time_point BeatStartTime;
 
 int vizscreen() {
 	DrawRectangle(0, 0, ScreenSize.x, ScreenSize.y, Color{ 10, 10, 10, 255});
@@ -219,9 +226,9 @@ int vizscreen() {
 			SetSoundVolume(LoadedSound, 0.2f);
 		}
 
-		for (int i = 0; i < VizLineAmount; i++) {
+		/*for (int i = 0; i < VizLineAmount; i++) {
 			VizLineHeights[i] = 5;
-		}
+		}*/
 		VizState = 1;
 		break;
 	case 1: // StandBy stage (wait player to start play)
@@ -239,6 +246,7 @@ int vizscreen() {
 			if (IsSoundReady(LoadedSound) && !IsSoundPlaying(LoadedSound)) {
 				PlaySound(LoadedSound);
 				PastTime = chrono::system_clock::now();
+				cout << *largest << " | " << *smallest << endl;
 				VizState = 2;
 			}
 		}
@@ -248,6 +256,7 @@ int vizscreen() {
 		if (GuiButton(Rectangle_{(ScreenSize.x / 2) - 12, (ScreenSize.y / 1.25f), 24, 24}, GuiIconText(133, ""))) {
 			// Stop Music and Visuals
 			StopSound(LoadedSound);
+			CircleRadius = BaseCircleRadius;
 			VizState = 0;
 			CurrentSampleIndex = 0;
 		}
@@ -255,20 +264,49 @@ int vizscreen() {
 		auto DurationSincePast = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() - PastTime);
 
 		try {
-			CurrentSampleIndex = (floor(DurationSincePast.count() / 1000.0f) * fps) + ceil((DurationSincePast.count() % 1000) / 16.667f);
-			cout << CompiledSamples[CurrentSampleIndex] << endl;
+			CurrentSampleIndex = round((DurationSincePast.count() / 1000.0f) * fps);
 
 			if (CurrentSampleIndex >= bufferSize / fps) {
 				cout << "Finished Playing" << endl;
 				return 0;
 			}
 
+			int FreqSkipRate = fps / 4;
+
 			for (int i = 0; i < VizLineAmount; i++) {
 
 				/// \todo Remap amplitude values using largest and smallest to a reasonable range.
+				/// > Normal remap functions dont work :[
+				//int RemappedHeight = 0 + (CompiledSamples[CurrentSampleIndex + i] - *smallest) * (100 - 0) / (*largest - *smallest);
+				//float RemappedHeight = 0 + (100 - 0) * ((CompiledSamples[CurrentSampleIndex + i] - *smallest) / (*largest - *smallest));
+				
+				//a* (1.0 - t) + b * t;
 
-				DrawRectangle((ScreenSize.x / 2) + (i * 20) - ((VizLineAmount / 2.0f) * 20), ScreenSize.y / 2, 15, ceil(CompiledSamples[CurrentSampleIndex + i] * 1000), RAYWHITE);
+				int ModuloIndex = round(CurrentSampleIndex % FreqSkipRate);
+				float t = ModuloIndex / static_cast<float>(FreqSkipRate);
+				cout << ModuloIndex << " | " << t << endl;
+				float Height = (CompiledSamples[i + 1][CurrentSampleIndex - ModuloIndex] * (1 - t)) + (CompiledSamples[i + 1][(CurrentSampleIndex - ModuloIndex) + fps] * t) * 200;
+				//float Height = CompiledSamples[i + 1][(CurrentSampleIndex / (fps / 2))] * 200;
+				DrawRectangle((i * 20), 14, 15, Height, RAYWHITE);
+
+				//Mirror Dupe
+				DrawRectangle((ScreenSize.x - 20) - (i * 20), 14, 15, Height, RAYWHITE);
 			}
+
+			// Main Circle
+
+			if (CompiledSamples[0][CurrentSampleIndex] * 1000.0f < -175.0f) {
+				BeatStartTime = chrono::system_clock::now();
+				CircleRadius -= (CompiledSamples[0][CurrentSampleIndex] * 100.0f);
+			}
+			else if (CircleRadius > BaseCircleRadius) {
+				float DurationSinceBeat = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() - BeatStartTime).count() / 1000.0f;
+				CircleRadius = (BaseCircleRadius + CircleRange) - (CircleRange * (DurationSinceBeat * 16.0f));
+			}
+
+			//DrawCircle(ScreenSize.x / 2, ScreenSize.y / 2, CircleRadius, RAYWHITE);
+			DrawCircle(ScreenSize.x / 2, ScreenSize.y / 2, 75, DARKBLUE);
+			DrawCircleLines(ScreenSize.x / 2, ScreenSize.y / 2, CircleRadius, SKYBLUE);
 		}
 		catch (int error) {
 			cout << "An Error occured while processing visuals : " << error << endl;
