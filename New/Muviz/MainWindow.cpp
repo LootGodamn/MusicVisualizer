@@ -271,7 +271,7 @@ int vizscreen() {
 				return 0;
 			}
 
-			int FreqSkipRate = fps / 4;
+			int FreqSkipRate = fps / 8;
 
 			for (int i = 0; i < VizLineAmount; i++) {
 
@@ -284,8 +284,11 @@ int vizscreen() {
 
 				int ModuloIndex = round(CurrentSampleIndex % FreqSkipRate);
 				float t = ModuloIndex / static_cast<float>(FreqSkipRate);
-				cout << ModuloIndex << " | " << t << endl;
-				float Height = (CompiledSamples[i + 1][CurrentSampleIndex - ModuloIndex] * (1 - t)) + (CompiledSamples[i + 1][(CurrentSampleIndex - ModuloIndex) + fps] * t) * 200;
+				int FreqIndex = CurrentSampleIndex / FreqSkipRate;
+
+				float Height = std::lerp(CompiledSamples[i + 1][FreqIndex], CompiledSamples[i + 1][FreqIndex + 1], t);
+
+				if (i == 1) cout << FreqIndex << " [" << t << "] " << Height << endl;
 				//float Height = CompiledSamples[i + 1][(CurrentSampleIndex / (fps / 2))] * 200;
 				DrawRectangle((i * 20), 14, 15, Height, RAYWHITE);
 

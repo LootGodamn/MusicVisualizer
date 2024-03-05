@@ -90,7 +90,7 @@ int SoundManager::readsamples(const char* FilePath, float** TargetArray, int Scr
 
 	/// > FAST FOURIER TRANSFORM ------------------------------------------------------------------------------------------------------------------------------
 
-		int FreqCalcSkipRate = sfinfo.samplerate / 4;
+		int FreqCalcSkipRate = sfinfo.samplerate / 8;
 
 		// Initialize FFTW plan
 		fftwf_complex* in = (fftwf_complex*)fftwf_malloc(sizeof(fftwf_complex) * FreqCalcSkipRate);
