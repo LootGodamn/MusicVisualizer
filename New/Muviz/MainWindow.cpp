@@ -34,7 +34,7 @@ float* LoudnessSamples;
 
 int fps = 120;
 
-float largest_ = -10000;
+float largest_ = 0;
 float smallest_ = 10000;
 float* largest = &largest_;
 float* smallest = &smallest_;
@@ -168,8 +168,8 @@ int mainscreen(){
 		bufferSize = sfinfo.frames;
 		cout << bufferSize / Channels << endl;
 
-		CompiledSamples = new float*[11];
-		for (int i = 0; i < 11; ++i){
+		CompiledSamples = new float*[26];
+		for (int i = 0; i < 26; ++i){
 			CompiledSamples[i] = new float[bufferSize / Channels];
 		}
 
@@ -192,7 +192,7 @@ int mainscreen(){
 	return 0;
 }
 
-int VizLineAmount = 10;
+int VizLineAmount = 21;
 int VizState = 0;
 
 chrono::system_clock::time_point PastTime;
@@ -275,25 +275,15 @@ int vizscreen() {
 
 			for (int i = 0; i < VizLineAmount; i++) {
 
-				/// \todo Remap amplitude values using largest and smallest to a reasonable range.
-				/// > Normal remap functions dont work :[
-				//int RemappedHeight = 0 + (CompiledSamples[CurrentSampleIndex + i] - *smallest) * (100 - 0) / (*largest - *smallest);
-				//float RemappedHeight = 0 + (100 - 0) * ((CompiledSamples[CurrentSampleIndex + i] - *smallest) / (*largest - *smallest));
-				
-				//a* (1.0 - t) + b * t;
-
 				int ModuloIndex = round(CurrentSampleIndex % FreqSkipRate);
 				float t = ModuloIndex / static_cast<float>(FreqSkipRate);
 				int FreqIndex = CurrentSampleIndex / FreqSkipRate;
 
 				float Height = std::lerp(CompiledSamples[i + 1][FreqIndex], CompiledSamples[i + 1][FreqIndex + 1], t);
 
-				if (i == 1) cout << FreqIndex << " [" << t << "] " << Height << endl;
-				//float Height = CompiledSamples[i + 1][(CurrentSampleIndex / (fps / 2))] * 200;
-				DrawRectangle((i * 20), 14, 15, Height, RAYWHITE);
+				float RemappedHeight = Height * 100 / *largest;
 
-				//Mirror Dupe
-				DrawRectangle((ScreenSize.x - 20) - (i * 20), 14, 15, Height, RAYWHITE);
+				DrawRectangle((ScreenSize.x / 2) + (((-VizLineAmount / 2.0f) + i) * 20), 24, 15, RemappedHeight * 2, RAYWHITE);
 			}
 
 			// Main Circle

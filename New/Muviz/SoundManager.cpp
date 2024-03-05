@@ -14,7 +14,7 @@
 using namespace std;
 
 Color TranslucentOverlay = Color{ 10, 10, 10, 100 };
-const int numFrequencyBins = 10;
+const int numFrequencyBins = 25;
 
 int SoundManager::readsamples(const char* FilePath, float** TargetArray, int ScreenW, int ScreenH, int fps, float* largest, float* smallest) {
 
@@ -80,9 +80,6 @@ int SoundManager::readsamples(const char* FilePath, float** TargetArray, int Scr
 				float SampleAvg = SampleSum / fps;
 
 				TargetArray[0][i / SampleSkipRate] = SampleAvg;
-
-				if (*largest < SampleAvg) *largest = SampleAvg;
-				if (*smallest > SampleAvg) *smallest = SampleAvg;
 			}
 		}
 
@@ -116,7 +113,7 @@ int SoundManager::readsamples(const char* FilePath, float** TargetArray, int Scr
 
 			fftwf_execute(plan);
 
-			// Output the values of 10 different frequency bins
+			// Output the values of different frequency bins
 			for (int bin = 0; bin < numFrequencyBins; ++bin) {
 				// Frequency calculation: bin * (sampling rate / array size)
 				//double frequency = static_cast<double>(bin) * (sfinfo.samplerate / ArraySize);
@@ -126,8 +123,9 @@ int SoundManager::readsamples(const char* FilePath, float** TargetArray, int Scr
 				float Magnitude = sqrt(out[binIndex][0] * out[binIndex][0] + out[binIndex][1] * out[binIndex][1]);
 				
 				TargetArray[bin + 1][i / FreqCalcSkipRate] = Magnitude;
+				if (*largest < Magnitude) *largest = Magnitude;
 
-				std::cout << "Bin " << bin << ": Magnitude = " << Magnitude << "\n";
+				///std::cout << "Bin " << bin << ": Magnitude = " << Magnitude << "\n";
 			}
 		}
 		
