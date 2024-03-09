@@ -14,7 +14,7 @@
 using namespace std;
 
 Color TranslucentOverlay = Color{ 10, 10, 10, 100 };
-const int numFrequencyBins = 25;
+const int numFrequencyBins = 50;
 
 int SoundManager::readsamples(const char* FilePath, float** TargetArray, int ScreenW, int ScreenH, int fps, float* largest, float* smallest) {
 
@@ -43,7 +43,7 @@ int SoundManager::readsamples(const char* FilePath, float** TargetArray, int Scr
 	const int bufferSize = sfinfo.frames;
 	const int ArraySize = bufferSize / Channels;
 
-	static float* buffer = new (std::nothrow) float[bufferSize * Channels];
+	float* buffer = new (std::nothrow) float[bufferSize * Channels];
 
 	/// Throw error if buffer fails to declare
 	if (!buffer) {
@@ -67,11 +67,11 @@ int SoundManager::readsamples(const char* FilePath, float** TargetArray, int Scr
 				//GuiDrawText("Reading File..", Rectangle_{ (ScreenW / 2.0f) - 130, (ScreenH / 2.0f) - 40, 260, 35 }, 1, RAYWHITE);
 				DrawTextEx(GetFontDefault(), "Reading File..", Vector2{ (ScreenW / 2.0f) - 80, (ScreenH / 2.0f) - 10 }, 20, 1, RAYWHITE);
 		EndDrawing();
-		
 
 		for (sf_count_t i = 0; i < bytesRead; i += SampleSkipRate) {
 			if (i < bytesRead) {
 
+				//Reading Amplitude
 				float SampleSum = 0;
 				for (int SubSample = 0; SubSample < fps; SubSample++) {
 					SampleSum += buffer[(i + SubSample) * Channels];
@@ -87,7 +87,7 @@ int SoundManager::readsamples(const char* FilePath, float** TargetArray, int Scr
 
 	/// > FAST FOURIER TRANSFORM ------------------------------------------------------------------------------------------------------------------------------
 
-		int FreqCalcSkipRate = sfinfo.samplerate / 8;
+		int FreqCalcSkipRate = sfinfo.samplerate / 30;
 
 		// Initialize FFTW plan
 		fftwf_complex* in = (fftwf_complex*)fftwf_malloc(sizeof(fftwf_complex) * FreqCalcSkipRate);

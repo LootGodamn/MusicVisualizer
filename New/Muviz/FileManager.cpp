@@ -9,14 +9,16 @@ using namespace std;
 
 const char* convertPWSTRtoConstChar(PWSTR WideString);
 
-const char* FileManager::OpenFileExplorer()
+const char* FileManager::OpenFileExplorer(int FileType)
 {
         // CoInitialize is needed to initialize the COM library
         CoInitialize(NULL);
 
         // Create an instance of the File Open dialog
         IFileDialog* FileDialog;
-        HRESULT HResult = CoCreateInstance(
+        HRESULT HResult; 
+
+        HResult = CoCreateInstance(
             CLSID_FileOpenDialog,
             NULL,
             CLSCTX_INPROC_SERVER,
@@ -25,14 +27,32 @@ const char* FileManager::OpenFileExplorer()
 
         if (SUCCEEDED(HResult)) {
             // Set file type filters
-            COMDLG_FILTERSPEC FileTypes[] = {
-                { L"MP3 Files", L"*.mp3" },
-                { L"WAV Files", L"*.wav" },
-                { L"OGG Files", L"*.ogg" },
-                { L"FLAC Files", L"*.flac" },
-                { L"All Files", L"*.*" }
-            };
+            COMDLG_FILTERSPEC FileTypes[5] = {}; // Initialize the array
+            switch (FileType) {
+            case 0:
+                FileTypes[0] = { L"MP3 Files", L"*.mp3" };
+                FileTypes[1] = { L"WAV Files", L"*.wav" };
+                FileTypes[2] = { L"OGG Files", L"*.ogg" };
+                FileTypes[3] = { L"FLAC Files", L"*.flac" };
+                FileTypes[4] = { L"All Files", L"*.*" };
+                break;
+            case 1:
+                FileTypes[0] = { L"PNG Files", L"*.png" };
+                FileTypes[1] = { L"JPG Files", L"*.jpg" };
+                FileTypes[2] = { L"None", L"*.*" };
+                FileTypes[3] = { L"None", L"*.*" };
+                FileTypes[4] = { L"All Files", L"*.*" };
+                break;
+            case 2:
+                FileTypes[0] = { L"MP4 Files", L"*.mp4" };
+                FileTypes[1] = { L"AVI Files", L"*.avi" };
+                FileTypes[2] = { L"MOV Files", L"*.mov" };
+                FileTypes[3] = { L"MPEG Files", L"*.mpeg" };
+                FileTypes[4] = { L"All Files", L"*.*" };
+                break;
+            }
             HResult = FileDialog->SetFileTypes(_countof(FileTypes), FileTypes);
+         
 
             if (SUCCEEDED(HResult)) {
                 // Show the File Open dialog
@@ -55,9 +75,12 @@ const char* FileManager::OpenFileExplorer()
                             std::cout << "Narrow String: " << NarrowString << std::endl;
 
                             return NarrowString;
-                        }
 
+                            delete[] NarrowString;
+                        }
+                        
                         Item->Release();
+                        CoTaskMemFree(FilePath);
                     }
                 }
             }
@@ -66,6 +89,7 @@ const char* FileManager::OpenFileExplorer()
             FileDialog->Release();
         }
 
+        
         // CoUninitialize to clean up the COM library
         CoUninitialize();
 }
