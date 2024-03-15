@@ -147,6 +147,11 @@ void timedtext(int Duration, const char* DisplayText) {
 cv::VideoCapture CappedVideo;
 double BgFpsDelay;
 
+bool AudioInitiated = false;
+Sound LoadedSound = Sound{};
+int VizState = 1;
+float VizLineHeights[50];
+
 int mainscreen(){
 	//Categories of options
 	GuiPanel(Rectangle_{ 0, 0, SettingMargin , static_cast<float>(ScreenSize.y) }, "Song Selection");
@@ -208,8 +213,8 @@ int mainscreen(){
 
 	//File reading
 
-		if (FileNameDisplay != nullptr) GuiLabel(Rectangle_{ 160.0f + UiMargin + UiMargin, 34.0f, 160.0f, 28.0f }, FileNameDisplay);
-	/// \todo Weird bug where new file isnt loaded after coming back from vizscreen
+	if (FileNameDisplay != nullptr) GuiLabel(Rectangle_{ 160.0f + UiMargin + UiMargin, 34.0f, 160.0f, 28.0f }, FileNameDisplay);
+
 	if (GuiButton(Rectangle_{ UiMargin, 34.0f, 160.0f, 28.0f }, "Open File")) {
 
 		FilePath = const_cast<char*>(File_Manager.OpenFileExplorer(0));
@@ -296,6 +301,27 @@ int mainscreen(){
 	//Button to switch screens
 	if (GuiButton(Rectangle_{ UiMargin, 69.0f, 160.0f, 28.0f }, "Viz Screen")){
 		CurrentScreen = 1;
+
+		if (!AudioInitiated) {
+			if (!IsAudioDeviceReady()) {
+
+				InitAudioDevice();
+
+				if (!IsAudioDeviceReady()) { cout << "Audio device unable to initialize" << endl; return false; }
+			}
+
+			AudioInitiated = true;
+			cout << "Audio Initiated\n";
+
+			LoadedSound = LoadSound(FilePath);
+			SetSoundVolume(LoadedSound, 0.2f);
+
+			for (int i = 0; i < 50; i++) {
+				VizLineHeights[i] = 0;
+			}
+		}
+
+		VizState = 1;
 	}
 
 	//Toggles for visual elements + color pickers
@@ -311,16 +337,13 @@ int mainscreen(){
 }
 
 int VizLineAmount = 50;
-float VizLineHeights[50];
+
 float LineMaxHeight = 150;
 int PreviousIndex = 0;
-int VizState = 0;
+
 
 chrono::system_clock::time_point PastTime;
 int CurrentSampleIndex = 0;
-
-bool AudioInitiated = false;
-Sound LoadedSound = Sound{};
 
 float BassCircleRadius = 75.0f;
 float MainCircleRadius = 75.0f;
@@ -406,41 +429,16 @@ int vizscreen() {
 	if (!SamplesReady) return 2;
 
 	switch (VizState) {
-	
-	case 0: // Initalizing stage
-		if (!AudioInitiated) {
-			if (!IsAudioDeviceReady()){
-
-				InitAudioDevice();
-
-				if (!IsAudioDeviceReady()) { cout << "Audio device unable to initialize" << endl; return false; }
-			}
-
-			AudioInitiated = true;
-			cout << "Audio Initiated\n";
-
-			LoadedSound = LoadSound(FilePath);
-			SetSoundVolume(LoadedSound, 0.2f);
-
-			for (int i = 0; i < 50; i++) {
-				VizLineHeights[i] = 0;
-			}
-		}
-
-		VizState = 1;
-		break;
 	case 1: // StandBy stage (wait player to start play)
 
 		//Button to switch screens
 		if (GuiButton(Rectangle_{ 24, 12, 160.0f, 35.0f }, "Back")) {
 			CurrentScreen = 0;
-			VizState = 0;
 		}
 
 		// Play Music and Visuals
 		if (GuiButton(Rectangle_{ (ScreenSize.x / 2) - 12, (ScreenSize.y / 1.25f), 24, 24 }, GuiIconText(131, ""))) {
 			
-			VizState = 0;
 			if (IsSoundReady(LoadedSound) && !IsSoundPlaying(LoadedSound)) {
 				PlaySound(LoadedSound);
 				PastTime = chrono::system_clock::now();
@@ -457,7 +455,7 @@ int vizscreen() {
 			UnloadSound(LoadedSound);
 			MainCircleRadius = BaseCircleRadius;
 			BassCircleRadius = BaseCircleRadius;
-			VizState = 0;
+			VizState = 1;
 			CurrentSampleIndex = 0;
 
 			// Release the VideoCapture object
@@ -465,6 +463,8 @@ int vizscreen() {
 			cv::destroyAllWindows();
 			WindowInitiated = false;
 			AudioInitiated = false;
+
+			cout << "VIZ STATE " << VizState << endl;
 
 			return 0;
 		}
@@ -480,7 +480,7 @@ int vizscreen() {
 			}
 
 			if (ElementSwitches[0]) {
-				/// \todo The bars just- stop at one point ??
+				/// \todo The bars just- stop at one point ?? ONLY ON SPECIFIC SONGS?
 				int FreqSkipRate = fps / 30;
 
 				for (int i = 0; i < VizLineAmount; i++) {
@@ -566,6 +566,7 @@ int vizscreen() {
 			AudioInitiated = false;
 			CurrentSampleIndex = 0;
 			delete[] CompiledSamples;
+			VizState = 1;
 			return 1;
 		}
 
