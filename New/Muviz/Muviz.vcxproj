@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\fftw-3.3.5-dll64;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\opencv2;D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\fftw-3.3.5-dll64;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\opencv2\highgui;D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\fftw-3.3.5-dll64;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\opencv2\highgui;D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\opencv2;D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\fftw-3.3.5-dll64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -108,14 +108,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\opencv2;D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\fftw-3.3.5-dll64;D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\icons;D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Main\C++\OpenCV\opencv\build\include;D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\fftw-3.3.5-dll64;D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\icons;D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libfftw3f-3.lib;opencv_world490.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\opencv2;D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\fftw-3.3.5-dll64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libfftw3f-3.lib;opencv_world490d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Main\C++\OpenCV\opencv\build\x64\vc16\lib;D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\fftw-3.3.5-dll64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

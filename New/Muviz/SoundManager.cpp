@@ -18,23 +18,6 @@ const int numFrequencyBins = 50;
 
 int SoundManager::readsamples(const char* FilePath, float** TargetArray, int ScreenW, int ScreenH, int fps, float* largest, float* smallest) {
 
-	/// >Reading Data from audio file --------------------------------------------------------------
-		/// Read audio samples into the buffer
-		/// Buffer size cant be big enough -> Throws access violation error 
-		/// Either buffer[] size too small or audio_file got too little frames
-		/// 
-		/// Ensure the read bytes are not NULL
-		/// Loop through each sample
-			/// Find largest
-			/// Find smallest
-			/// Transfer valid samples to an array
-		/// Write data
-	/// > -------------------------------------------------------------------------------------------
-		
-	// Read audio samples into the buffer
-	// Buffer size cant be big enough -> Throws access violation error 
-	// Either buffer[] size too small or audio_file got too little frames
-
 	SF_INFO sfinfo;
 
 	SNDFILE* File = sf_open(FilePath, SFM_READ, &sfinfo);
@@ -68,6 +51,7 @@ int SoundManager::readsamples(const char* FilePath, float** TargetArray, int Scr
 				DrawTextEx(GetFontDefault(), "Reading File..", Vector2{ (ScreenW / 2.0f) - 80, (ScreenH / 2.0f) - 10 }, 20, 1, RAYWHITE);
 		EndDrawing();
 
+		///> Loop 1 for Amplitude
 		for (sf_count_t i = 0; i < bytesRead; i += SampleSkipRate) {
 			if (i < bytesRead) {
 
@@ -102,6 +86,7 @@ int SoundManager::readsamples(const char* FilePath, float** TargetArray, int Scr
 
 		fftwf_plan plan = fftwf_plan_dft_1d(FreqCalcSkipRate, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
 
+		///> Loop 2 for Frequency
 		for (int i = 0; i < ArraySize; i += FreqCalcSkipRate) {
 			// Ensure that we don't go beyond the end of the array
 			int EndIndex = std::min(i + FreqCalcSkipRate, ArraySize);
@@ -113,6 +98,7 @@ int SoundManager::readsamples(const char* FilePath, float** TargetArray, int Scr
 
 			fftwf_execute(plan);
 
+			///> Loop 2.1 for each frequency bin
 			// Output the values of different frequency bins
 			for (int bin = 0; bin < numFrequencyBins; ++bin) {
 				// Frequency calculation: bin * (sampling rate / array size)
@@ -120,7 +106,7 @@ int SoundManager::readsamples(const char* FilePath, float** TargetArray, int Scr
 
 				/// >IF Freq is inaccurate, change (fps / 2) to sfinfo.samplerate
 				int binIndex = bin * FreqCalcSkipRate / numFrequencyBins;
-				float Magnitude = sqrt(out[binIndex][0] * out[binIndex][0] + out[binIndex][1] * out[binIndex][1]);
+				float Magnitude = sqrt((out[binIndex][0] * out[binIndex][0]) + (out[binIndex][1] * out[binIndex][1]));
 				
 				TargetArray[bin + 1][i / FreqCalcSkipRate] = Magnitude;
 				if (*largest < Magnitude) *largest = Magnitude;

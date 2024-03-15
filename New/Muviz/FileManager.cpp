@@ -92,6 +92,7 @@ const char* FileManager::OpenFileExplorer(int FileType)
         
         // CoUninitialize to clean up the COM library
         CoUninitialize();
+        return nullptr;
 }
 
 const char* convertPWSTRtoConstChar(PWSTR WideString) {
