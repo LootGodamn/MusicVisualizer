@@ -213,7 +213,7 @@ int mainscreen(){
 
 	//File reading
 
-	if (FileNameDisplay != nullptr) GuiLabel(Rectangle_{ 160.0f + UiMargin + UiMargin, 34.0f, 160.0f, 28.0f }, FileNameDisplay);
+		if (FileNameDisplay != nullptr) GuiLabel(Rectangle_{ 160.0f + UiMargin + UiMargin, 34.0f, SettingMargin - ((UiMargin * 3)+160.0f), 28.0f }, FileNameDisplay);
 
 	if (GuiButton(Rectangle_{ UiMargin, 34.0f, 160.0f, 28.0f }, "Open File")) {
 
@@ -278,7 +278,7 @@ int mainscreen(){
 	
 
 	// Circle Image picking
-	if (GuiButton(Rectangle_{ SettingMargin + UiMargin, 223.0f, 240.0f, 28.0f }, "Choose Circle Image")) {
+	if (GuiButton(Rectangle_{ SettingMargin + UiMargin + 185, 490.0f, 150.0f, 28.0f }, "Circle Image")) {
 
 		CircleFilePath_ = const_cast<char*>(File_Manager.OpenFileExplorer(1));
 		if (CircleFilePath_ == nullptr) {
@@ -480,7 +480,7 @@ int vizscreen() {
 			}
 
 			if (ElementSwitches[0]) {
-				/// \todo The bars just- stop at one point ?? ONLY ON SPECIFIC SONGS?
+				/// \todo The bars end faster on songs that are stereo. Works on mono :/
 				int FreqSkipRate = fps / 30;
 
 				for (int i = 0; i < VizLineAmount; i++) {

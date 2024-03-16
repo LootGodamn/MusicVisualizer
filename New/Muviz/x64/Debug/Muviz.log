@@ -1,54 +1,6 @@
-﻿  MainWindow.cpp
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\cyber\style_cyber.h(21,13): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
-  (compiling source file 'MainWindow.cpp')
-  
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\cyber\style_cyber.h(23,13): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
-  (compiling source file 'MainWindow.cpp')
-  
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\cyber\style_cyber.h(24,13): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
-  (compiling source file 'MainWindow.cpp')
-  
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\cyber\style_cyber.h(25,13): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
-  (compiling source file 'MainWindow.cpp')
-  
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\cyber\style_cyber.h(26,13): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
-  (compiling source file 'MainWindow.cpp')
-  
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\cyber\style_cyber.h(32,14): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
-  (compiling source file 'MainWindow.cpp')
-  
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(77,32): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(78,31): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(79,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(79,26): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(141,47): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(141,33): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(259,22): warning C4244: '=': conversion from 'sf_count_t' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(270,84): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(270,70): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(292,29): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(293,29): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(363,25): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(403,42): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(403,28): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(426,47): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(426,33): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(475,30): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(488,22): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(505,104): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(505,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(508,150): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(508,102): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(508,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(511,100): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(511,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(514,140): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(514,84): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(514,34): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(535,79): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(535,61): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(553,52): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(553,34): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+﻿  SoundManager.cpp
+D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\SoundManager.cpp(26,31): warning C4244: 'initializing': conversion from 'sf_count_t' to 'int', possible loss of data
+D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\SoundManager.cpp(26,23): warning C4244: 'initializing': conversion from 'sf_count_t' to 'const int', possible loss of data
   Muviz.vcxproj -> D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\x64\Debug\Muviz.exe
   'pwsh.exe' is not recognized as an internal or external command,
   operable program or batch file.

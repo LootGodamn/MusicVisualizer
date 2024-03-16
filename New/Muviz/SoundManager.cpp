@@ -58,7 +58,7 @@ int SoundManager::readsamples(const char* FilePath, float** TargetArray, int Scr
 				//Reading Amplitude
 				float SampleSum = 0;
 				for (int SubSample = 0; SubSample < fps; SubSample++) {
-					SampleSum += buffer[(i + SubSample) * Channels];
+					SampleSum += (buffer[(i + SubSample) * Channels] + buffer[(i + SubSample)]) / Channels;
 				}
 
 				float SampleAvg = SampleSum / fps;
