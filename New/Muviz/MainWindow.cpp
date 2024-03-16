@@ -46,6 +46,8 @@ bool ImageDropDownEditMode = false;
 
 int BarMode = 0;
 bool BarDropDownEditMode = false;
+bool BarWidthEditMode = false;
+bool BarGapEditMode = false;
 
 int bufferSize;
 
@@ -54,9 +56,9 @@ float** CompiledSamples;
 int fps = 120;
 
 float largest_ = 0;
-float smallest_ = 10000;
 float* largest = &largest_;
-float* smallest = &smallest_;
+float midpoint_ = 0;
+float* midpoint = &midpoint_;
 
 bool ElementSwitches[] = {true, true, true};
 const char* ElementNames[] = {"Bars", "Color Circle", "Bass Circle"};
@@ -150,7 +152,10 @@ double BgFpsDelay;
 bool AudioInitiated = false;
 Sound LoadedSound = Sound{};
 int VizState = 1;
-float VizLineHeights[50];
+float VizLineHeights[75];
+
+int VizLineGap = 5;
+int VizLineWidth = 15;
 
 int mainscreen(){
 	//Categories of options
@@ -259,20 +264,20 @@ int mainscreen(){
 		bufferSize = sfinfo.frames;
 		cout << bufferSize / Channels << endl;
 
-		CompiledSamples = new float*[51];
-		for (int i = 0; i < 51; ++i){
+		CompiledSamples = new float*[76];
+		for (int i = 0; i < 76; ++i){
 			CompiledSamples[i] = new float[bufferSize / Channels];
 		}
 
 		sf_close(audio_file);
 
 		EndDrawing();
-		if (Sound_Manager.readsamples(FilePath, CompiledSamples, ScreenSize.x, ScreenSize.y, fps, largest, smallest) == 1) return 1;
+		if (Sound_Manager.readsamples(FilePath, CompiledSamples, ScreenSize.x, ScreenSize.y, fps, largest, midpoint) == 1) return 1;
 		else SamplesReady = true;
 
 		if (CompiledSamples != NULL) cout << "Success loading data" << endl;
 
-		cout << *largest << " | " << *smallest << endl;
+		cout << *largest << " | " << *midpoint << endl;
 	}
 
 	
@@ -330,13 +335,17 @@ int mainscreen(){
 		GuiCheckBox(Rectangle_{ SettingMargin + (UiMargin*2)+(i * 185), 308.0f , 20.0f, 20.0f }, ElementNames[i], &ElementSwitches[i]);
 	}
 
+	//Bar Width n Gap
+	if (GuiSpinner(Rectangle_{ SettingMargin + UiMargin + 50, 525.0f, 75.0f, 28.0f }, "Bar Width", &VizLineWidth, 5, 50, BarWidthEditMode)) BarWidthEditMode = !BarWidthEditMode;
+	if (GuiSpinner(Rectangle_{ SettingMargin + UiMargin + 50, 560.0f, 75.0f, 28.0f }, "Bar Gap", &VizLineGap, 0, 30, BarGapEditMode)) BarGapEditMode = !BarGapEditMode;
+
 	//Bar style dropdown
 	if (GuiDropdownBox(Rectangle_{ SettingMargin + UiMargin, 490.0f, 150.0f, 28.0f }, "Top;Bottom;Left;Right", &BarMode, BarDropDownEditMode)) BarDropDownEditMode = !BarDropDownEditMode;
 
 	return 0;
 }
 
-int VizLineAmount = 50;
+int VizLineAmount = 75;
 
 float LineMaxHeight = 150;
 int PreviousIndex = 0;
@@ -345,11 +354,11 @@ int PreviousIndex = 0;
 chrono::system_clock::time_point PastTime;
 int CurrentSampleIndex = 0;
 
-float BassCircleRadius = 75.0f;
-float MainCircleRadius = 75.0f;
+float BassCircleRadius = 100.0f;
+float MainCircleRadius = 100.0f;
 int MainCircleOffset = 40;
-float BaseCircleRadius = 75.0f;
-float MaxCircleRadius = 200;
+float BaseCircleRadius = 100.0f;
+float MaxCircleRadius = 150;
 int CircleRange = 25;
 chrono::system_clock::time_point BassStartTime;
 chrono::system_clock::time_point BeatStartTime;
@@ -442,7 +451,7 @@ int vizscreen() {
 			if (IsSoundReady(LoadedSound) && !IsSoundPlaying(LoadedSound)) {
 				PlaySound(LoadedSound);
 				PastTime = chrono::system_clock::now();
-				cout << *largest << " | " << *smallest << endl;
+				cout << *largest << " | " << *midpoint << endl;
 				VizState = 2;
 			}
 		}
@@ -502,16 +511,16 @@ int vizscreen() {
 
 					switch (BarMode) {
 					case 0:
-						DrawRectangle((ScreenSize.x / 2) + (((-VizLineAmount / 2.0f) + i) * 20), 24, 15, VizLineHeights[i], VizColors[1]);
+						DrawRectangle((ScreenSize.x / 2) + (((-VizLineAmount / 2.0f) + i) * (VizLineWidth + VizLineGap)), 24, VizLineWidth, VizLineHeights[i], VizColors[1]);
 						break;
 					case 1:
-						DrawRectangle((ScreenSize.x / 2) + (((-VizLineAmount / 2.0f) + i) * 20), (ScreenSize.y / 1.1f) - (VizLineHeights[i] + 24), 15, VizLineHeights[i], VizColors[1]);
+						DrawRectangle((ScreenSize.x / 2) + (((-VizLineAmount / 2.0f) + i) * (VizLineWidth + VizLineGap)), (ScreenSize.y / 1.1f) - (VizLineHeights[i] + 24), VizLineWidth, VizLineHeights[i], VizColors[1]);
 						break;
 					case 2:
-						DrawRectangle(24, (ScreenSize.y / 2) + (((-VizLineAmount / 1.9f) + i) * 20), VizLineHeights[i], 15, VizColors[1]);
+						DrawRectangle(24, (ScreenSize.y / 2) + (((-VizLineAmount / 1.9f) + i) * (VizLineWidth + VizLineGap)), VizLineHeights[i], VizLineWidth, VizColors[1]);
 						break;
 					case 3:
-						DrawRectangle(ScreenSize.x - (VizLineHeights[i] + 24), (ScreenSize.y / 1.9f) + (((-VizLineAmount / 2.0f) + i) * 20), VizLineHeights[i], 15, VizColors[1]);
+						DrawRectangle(ScreenSize.x - (VizLineHeights[i] + 24), (ScreenSize.y / 1.9f) + (((-VizLineAmount / 2.0f) + i) * (VizLineWidth + VizLineGap)), VizLineHeights[i], VizLineWidth, VizColors[1]);
 						break;
 					}
 				}
@@ -519,12 +528,13 @@ int vizscreen() {
 			}
 
 			// Main Circle
-
 			if (ElementSwitches[1]) {
 				///cout << CompiledSamples[1][CurrentSampleIndex] + MainCircleOffset << endl;
-				if ((CompiledSamples[1][CurrentSampleIndex] + MainCircleOffset) > 75 && (CompiledSamples[1][CurrentSampleIndex] + MainCircleOffset) >= MainCircleRadius) {
+				int OffsetSample = CompiledSamples[1][CurrentSampleIndex] + 50;
+				
+				if (OffsetSample > *midpoint && (OffsetSample + MainCircleOffset) >= MainCircleRadius) {
 					BeatStartTime = chrono::system_clock::now();
-					MainCircleRadius = std::min(CompiledSamples[1][CurrentSampleIndex] + MainCircleOffset, MaxCircleRadius);
+					MainCircleRadius = std::min(static_cast<float>(OffsetSample + MainCircleOffset), MaxCircleRadius);
 				}
 				else if (MainCircleRadius > BaseCircleRadius) {
 					float DurationSinceBeat = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() - BeatStartTime).count() / 1000.0f;
@@ -553,8 +563,8 @@ int vizscreen() {
 				DrawCircleLines(ScreenSize.x / 2, ScreenSize.y / 2, BassCircleRadius + (MainCircleRadius - BaseCircleRadius), VizColors[3]);
 			}
 
-			if (CompiledSamples[0][CurrentSampleIndex] * 1000.0f < -175.0f) VidSpeed = 5;
-			else VidSpeed = 33;
+			if (CompiledSamples[0][CurrentSampleIndex] * 1000.0f < -200.0f) VidSpeed = 1;
+			else VidSpeed = 84;
 		}
 		catch (int error) {
 			cout << "An Error occured while processing visuals : " << error << endl;

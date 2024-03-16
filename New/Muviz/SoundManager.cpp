@@ -14,28 +14,28 @@
 using namespace std;
 
 Color TranslucentOverlay = Color{ 10, 10, 10, 100 };
-const int numFrequencyBins = 50;
+const int numFrequencyBins = 75;
 
-int SoundManager::readsamples(const char* FilePath, float** TargetArray, int ScreenW, int ScreenH, int fps, float* largest, float* smallest) {
+int SoundManager::readsamples(const char* FilePath, float** TargetArray, int ScreenW, int ScreenH, int fps, float* largest, float* midpoint) {
 
 	SF_INFO sfinfo;
 
 	SNDFILE* File = sf_open(FilePath, SFM_READ, &sfinfo);
 
 	const int Channels = sfinfo.channels;
-	const int bufferSize = sfinfo.frames;
-	const int ArraySize = bufferSize / Channels;
+	const int BufferSize = sfinfo.frames;
+	const int ArraySize = BufferSize / Channels;
 
-	float* buffer = new (std::nothrow) float[bufferSize * Channels];
+	float* Buffer = new (std::nothrow) float[BufferSize * Channels];
 
-	/// Throw error if buffer fails to declare
-	if (!buffer) {
-		std::cerr << "Error allocating memory for the buffer." << std::endl;
+	/// Throw error if Buffer fails to declare
+	if (!Buffer) {
+		std::cerr << "Error allocating memory for the Buffer." << std::endl;
 		sf_close(File);
 		return 1;
 	}
 
-	sf_count_t bytesRead = sf_readf_float(File, buffer, bufferSize);
+	sf_count_t bytesRead = sf_readf_float(File, Buffer, BufferSize);
 
 	if (bytesRead < 0) {
 		std::cerr << "Error reading audio samples: " << sf_strerror(File) << std::endl;
@@ -50,7 +50,7 @@ int SoundManager::readsamples(const char* FilePath, float** TargetArray, int Scr
 				//GuiDrawText("Reading File..", Rectangle_{ (ScreenW / 2.0f) - 130, (ScreenH / 2.0f) - 40, 260, 35 }, 1, RAYWHITE);
 				DrawTextEx(GetFontDefault(), "Reading File..", Vector2{ (ScreenW / 2.0f) - 80, (ScreenH / 2.0f) - 10 }, 20, 1, RAYWHITE);
 		EndDrawing();
-
+		double TotalAmps = 0;
 		///> Loop 1 for Amplitude
 		for (sf_count_t i = 0; i < bytesRead; i += SampleSkipRate) {
 			if (i < bytesRead) {
@@ -58,16 +58,19 @@ int SoundManager::readsamples(const char* FilePath, float** TargetArray, int Scr
 				//Reading Amplitude
 				float SampleSum = 0;
 				for (int SubSample = 0; SubSample < fps; SubSample++) {
-					SampleSum += (buffer[(i + SubSample) * Channels] + buffer[(i + SubSample)]) / Channels;
+					SampleSum += (Buffer[(i + SubSample) * Channels] + Buffer[(i + SubSample)]) / Channels;
 				}
-
+				
 				float SampleAvg = SampleSum / fps;
+				TotalAmps += static_cast<double>(SampleAvg);
 
 				TargetArray[0][i / SampleSkipRate] = SampleAvg;
 			}
 		}
 
-		cout << bufferSize << endl;
+		*midpoint = (TotalAmps / (static_cast<float>(ArraySize) / SampleSkipRate)) / 1.5f;
+
+		cout << BufferSize << endl;
 
 	/// > FAST FOURIER TRANSFORM ------------------------------------------------------------------------------------------------------------------------------
 
@@ -93,7 +96,7 @@ int SoundManager::readsamples(const char* FilePath, float** TargetArray, int Scr
 
 			// Access and print the {fps} elements in between
 			for (int j = i; j < EndIndex; ++j) {
-				in[j - i][0] = buffer[j];
+				in[j - i][0] = Buffer[j];
 			}
 
 			fftwf_execute(plan);
@@ -125,7 +128,7 @@ int SoundManager::readsamples(const char* FilePath, float** TargetArray, int Scr
 		std::cout << "Successfully read and processed " << bytesRead << " audio samples." << std::endl;
 		sf_close(File);
 		EnableCursor();
-		delete[] buffer;
+		delete[] Buffer;
 		return 0;
 	}
 }
