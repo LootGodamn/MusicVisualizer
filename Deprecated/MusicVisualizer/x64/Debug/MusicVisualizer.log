@@ -1,7 +1,0 @@
-﻿  FileManager.cpp
-D:\Main\C++\GitHub\MusicVisualizer\Deprecated\MusicVisualizer\FileManager.cpp(1,10): error C1083: Cannot open include file: 'FileManager.h': No such file or directory
-  MainWindow.cpp
-D:\Main\C++\GitHub\MusicVisualizer\Deprecated\MusicVisualizer\MainWindow.cpp(6,10): error C1083: Cannot open include file: 'raygui.h': No such file or directory
-  SoundManager.cpp
-D:\Main\C++\GitHub\MusicVisualizer\Deprecated\MusicVisualizer\SoundManager.cpp(2,10): error C1083: Cannot open include file: 'SoundManager.h': No such file or directory
-  Generating Code...
