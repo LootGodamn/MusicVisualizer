@@ -307,27 +307,10 @@ int mainscreen(){
 	if (GuiButton(Rectangle_{ UiMargin, 69.0f, 160.0f, 28.0f }, "Viz Screen")){
 		CurrentScreen = 1;
 
-		if (!AudioInitiated) {
-			if (!IsAudioDeviceReady()) {
-
-				InitAudioDevice();
-
-				if (!IsAudioDeviceReady()) { cout << "Audio device unable to initialize" << endl; return false; }
-			}
-
-			AudioInitiated = true;
-			cout << "Audio Initiated\n";
-
-			LoadedSound = LoadSound(FilePath);
-			SetSoundVolume(LoadedSound, 0.2f);
-
-			for (int i = 0; i < 50; i++) {
-				VizLineHeights[i] = 0;
-			}
-		}
-
 		VizState = 1;
 	}
+
+	GuiLabel(Rectangle_{ UiMargin, 104.0f, SettingMargin, 28.0f }, "NOTE : Only mono audio works properly as of now");
 
 	//Toggles for visual elements + color pickers
 	for (int i = 0; i < 3; i++) {
@@ -356,7 +339,7 @@ int CurrentSampleIndex = 0;
 
 float BassCircleRadius = 100.0f;
 float MainCircleRadius = 100.0f;
-int MainCircleOffset = 40;
+int MainCircleOffset = 0;
 float BaseCircleRadius = 100.0f;
 float MaxCircleRadius = 150;
 int CircleRange = 25;
@@ -370,6 +353,16 @@ int VidSpeed = 33;
 int countdigits(int number) {
 	std::string strNumber = std::to_string(number);
 	return strNumber.length();  // or strNumber.size()
+}
+
+float FindLineHeight(int FreqSkipRate, int i) {
+	int ModuloIndex = round(CurrentSampleIndex % FreqSkipRate);
+	float t = ModuloIndex / static_cast<float>(FreqSkipRate);
+	int FreqIndex = CurrentSampleIndex / FreqSkipRate;
+
+	float Height = std::lerp(CompiledSamples[i + 1][FreqIndex], CompiledSamples[i + 1][FreqIndex + 1], t);
+
+	return std::min(((Height * 500 / *largest) * 2) + 5, LineMaxHeight);
 }
 
 int vizscreen() {
@@ -388,6 +381,7 @@ int vizscreen() {
 
 	if (BgVideoFilePath != nullptr && CurrentSampleIndex != 0) {
 		ClearBackground(BLANK);
+		if (VidSpeed == 1) DrawRectangle(0, 0, ScreenSize.x, ScreenSize.y, Fade(WHITE, 0.1f));
 		
 		cv::Mat frame;
 
@@ -447,6 +441,25 @@ int vizscreen() {
 
 		// Play Music and Visuals
 		if (GuiButton(Rectangle_{ (ScreenSize.x / 2) - 12, (ScreenSize.y / 1.25f), 24, 24 }, GuiIconText(131, ""))) {
+
+			if (!AudioInitiated) {
+				if (!IsAudioDeviceReady()) {
+
+					InitAudioDevice();
+
+					if (!IsAudioDeviceReady()) { cout << "Audio device unable to initialize" << endl; return false; }
+				}
+
+				AudioInitiated = true;
+				cout << "Audio Initiated\n";
+
+				LoadedSound = LoadSound(FilePath);
+				SetSoundVolume(LoadedSound, 0.2f);
+
+				for (int i = 0; i < 50; i++) {
+					VizLineHeights[i] = 0;
+				}
+			}
 			
 			if (IsSoundReady(LoadedSound) && !IsSoundPlaying(LoadedSound)) {
 				PlaySound(LoadedSound);
@@ -489,18 +502,13 @@ int vizscreen() {
 			}
 
 			if (ElementSwitches[0]) {
-				/// \todo The bars end faster on songs that are stereo. Works on mono :/
-				int FreqSkipRate = fps / 30;
+				/// \todo The bars end faster and are unsynced on songs that are stereo. Works on mono :/
 
 				for (int i = 0; i < VizLineAmount; i++) {
 
-					int ModuloIndex = round(CurrentSampleIndex % FreqSkipRate);
-					float t = ModuloIndex / static_cast<float>(FreqSkipRate);
-					int FreqIndex = CurrentSampleIndex / FreqSkipRate;
+					float RemappedHeight = FindLineHeight(fps / 30, i);
 
-					float Height = std::lerp(CompiledSamples[i + 1][FreqIndex], CompiledSamples[i + 1][FreqIndex + 1], t);
-
-					float RemappedHeight = std::min(((Height * 500 / *largest) * 2) + 5, LineMaxHeight);
+					if (i == VizLineAmount - 1) MainCircleOffset = RemappedHeight;
 
 					if (RemappedHeight >= VizLineHeights[i]) {
 						VizLineHeights[i] = RemappedHeight;
@@ -529,18 +537,19 @@ int vizscreen() {
 
 			// Main Circle
 			if (ElementSwitches[1]) {
-				///cout << CompiledSamples[1][CurrentSampleIndex] + MainCircleOffset << endl;
-				int OffsetSample = CompiledSamples[1][CurrentSampleIndex] + 50;
+
+				if (!ElementSwitches[0]) {
+					MainCircleOffset = FindLineHeight(fps / 30, VizLineAmount - 1);
+				}
 				
-				if (OffsetSample > *midpoint && (OffsetSample + MainCircleOffset) >= MainCircleRadius) {
+				if (MainCircleOffset + BaseCircleRadius > MainCircleRadius) {
 					BeatStartTime = chrono::system_clock::now();
-					MainCircleRadius = std::min(static_cast<float>(OffsetSample + MainCircleOffset), MaxCircleRadius);
+					MainCircleRadius = std::min(static_cast<float>(MainCircleOffset + BaseCircleRadius), MaxCircleRadius);
 				}
 				else if (MainCircleRadius > BaseCircleRadius) {
 					float DurationSinceBeat = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() - BeatStartTime).count() / 1000.0f;
 					MainCircleRadius -= (DurationSinceBeat * 8.0f);
 				}
-		
 				
 				if (CircleFilePath_ == nullptr) DrawCircle(ScreenSize.x / 2, ScreenSize.y / 2, MainCircleRadius, VizColors[2]);
 				else {
@@ -564,7 +573,7 @@ int vizscreen() {
 			}
 
 			if (CompiledSamples[0][CurrentSampleIndex] * 1000.0f < -200.0f) VidSpeed = 1;
-			else VidSpeed = 84;
+			else VidSpeed = 41;
 		}
 		catch (int error) {
 			cout << "An Error occured while processing visuals : " << error << endl;
