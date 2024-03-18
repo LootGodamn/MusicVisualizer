@@ -110,6 +110,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\Main\C++\OpenCV\opencv\build\include;D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\fftw-3.3.5-dll64;D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\icons;D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -1,4 +1,5 @@
-﻿  MainWindow.cpp
+﻿  FileManager.cpp
+  MainWindow.cpp
 D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\Headers\cyber\style_cyber.h(21,13): warning C4838: conversion from 'unsigned int' to 'int' requires a narrowing conversion
   (compiling source file 'MainWindow.cpp')
   
@@ -53,6 +54,11 @@ D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(554,79): warning C42
 D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(554,61): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(572,52): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\MainWindow.cpp(572,34): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  SoundManager.cpp
+D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\SoundManager.cpp(26,31): warning C4244: 'initializing': conversion from 'sf_count_t' to 'int', possible loss of data
+D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\SoundManager.cpp(26,23): warning C4244: 'initializing': conversion from 'sf_count_t' to 'const int', possible loss of data
+D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\SoundManager.cpp(71,78): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Generating Code...
   Muviz.vcxproj -> D:\Main\C++\GitHub\MusicVisualizer\New\Muviz\x64\Debug\Muviz.exe
   'pwsh.exe' is not recognized as an internal or external command,
   operable program or batch file.
