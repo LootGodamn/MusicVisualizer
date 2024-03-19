@@ -157,6 +157,15 @@ float VizLineHeights[75];
 int VizLineGap = 5;
 int VizLineWidth = 15;
 
+float BaseCircleRadius;
+float MaxCircleRadius;
+
+float BassCircleRadius;
+float MainCircleRadius;
+
+int CircleSize = 1;
+bool CircleSizeDropDownMode = false;
+
 int mainscreen(){
 	//Categories of options
 	GuiPanel(Rectangle_{ 0, 0, SettingMargin , static_cast<float>(ScreenSize.y) }, "Song Selection");
@@ -301,12 +310,28 @@ int mainscreen(){
 		cout << CircleScaleX << "| " << CircleScaleY << endl;
 	}
 
+	if (GuiDropdownBox(Rectangle_{ SettingMargin + UiMargin + 185, 525.0f, 150.0f, 28.0f }, "Small;Medium;Large", &CircleSize, CircleSizeDropDownMode)) CircleSizeDropDownMode = !CircleSizeDropDownMode;
+
 	GuiLabel(Rectangle_{ SettingMargin + UiMargin, 273.0f, 240.0f, 28.0f }, "Element Selection");
 
 	//Button to switch screens
 	if (GuiButton(Rectangle_{ UiMargin, 69.0f, 160.0f, 28.0f }, "Viz Screen")){
-		CurrentScreen = 1;
+		switch (CircleSize) {
+		case 0:
+			BaseCircleRadius = 50.0f;
+			break;
+		case 1:
+			BaseCircleRadius = 100.0f;
+			break;
+		case 2:
+			BaseCircleRadius = 150.0f;
+			break;
+		}
 
+		MaxCircleRadius = 75.0f + BaseCircleRadius;
+
+		BassCircleRadius = MainCircleRadius = BaseCircleRadius;
+		CurrentScreen = 1;
 		VizState = 1;
 	}
 
@@ -333,15 +358,11 @@ int VizLineAmount = 75;
 float LineMaxHeight = 150;
 int PreviousIndex = 0;
 
-
 chrono::system_clock::time_point PastTime;
 int CurrentSampleIndex = 0;
 
-float BassCircleRadius = 100.0f;
-float MainCircleRadius = 100.0f;
 int MainCircleOffset = 0;
-float BaseCircleRadius = 100.0f;
-float MaxCircleRadius = 150;
+
 int CircleRange = 25;
 chrono::system_clock::time_point BassStartTime;
 chrono::system_clock::time_point BeatStartTime;
@@ -349,6 +370,8 @@ chrono::system_clock::time_point BeatStartTime;
 bool WindowInitiated = false;
 
 int VidSpeed = 33;
+
+int MouseDetectionSize = 128;
 
 int countdigits(int number) {
 	std::string strNumber = std::to_string(number);
@@ -435,7 +458,7 @@ int vizscreen() {
 	case 1: // StandBy stage (wait player to start play)
 
 		//Button to switch screens
-		if (GuiButton(Rectangle_{ 24, 12, 160.0f, 35.0f }, "Back")) {
+		if (GuiButton(Rectangle_{ (ScreenSize.x / 2.0f) - 80, (ScreenSize.y / 1.2f), 160.0f, 35.0f }, "Back")) {
 			CurrentScreen = 0;
 		}
 
@@ -471,24 +494,34 @@ int vizscreen() {
 
 		break;
 	case 2: // Playing in progress
-		if (GuiButton(Rectangle_{(ScreenSize.x / 2) - 12, (ScreenSize.y / 1.25f), 24, 24}, GuiIconText(133, ""))) {
-			// Stop Music and Visuals
-			StopSound(LoadedSound);
-			UnloadSound(LoadedSound);
-			MainCircleRadius = BaseCircleRadius;
-			BassCircleRadius = BaseCircleRadius;
-			VizState = 1;
-			CurrentSampleIndex = 0;
+		Vector2 MousePos = GetMousePosition();
+		Vector2 PauseBtnPos;
+		PauseBtnPos.x = ScreenSize.x / 2;
+		PauseBtnPos.y = ScreenSize.y / 1.25f;
 
-			// Release the VideoCapture object
-			CappedVideo.release();
-			cv::destroyAllWindows();
-			WindowInitiated = false;
-			AudioInitiated = false;
+		//If Mouse in range
+		if ((MousePos.x >= PauseBtnPos.x - MouseDetectionSize && MousePos.x < PauseBtnPos.x + MouseDetectionSize &&
+			MousePos.y >= PauseBtnPos.y - MouseDetectionSize && MousePos.y < PauseBtnPos.y + MouseDetectionSize)) {
 
-			cout << "VIZ STATE " << VizState << endl;
+			if (GuiButton(Rectangle_{ PauseBtnPos.x - 12, PauseBtnPos.y, 24, 24 }, GuiIconText(133, ""))) {
+				// Stop Music and Visuals
+				StopSound(LoadedSound);
+				UnloadSound(LoadedSound);
+				MainCircleRadius = BaseCircleRadius;
+				BassCircleRadius = BaseCircleRadius;
+				VizState = 1;
+				CurrentSampleIndex = 0;
 
-			return 0;
+				// Release the VideoCapture object
+				CappedVideo.release();
+				cv::destroyAllWindows();
+				WindowInitiated = false;
+				AudioInitiated = false;
+
+				cout << "VIZ STATE " << VizState << endl;
+
+				return 0;
+			}
 		}
 
 		double DurationSincePast = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() - PastTime).count() / 1000.0f;
@@ -569,7 +602,7 @@ int vizscreen() {
 					BassCircleRadius = (BaseCircleRadius + CircleRange) - (CircleRange * (DurationSinceBeat * 16.0f));
 				}
 
-				DrawCircleLines(ScreenSize.x / 2, ScreenSize.y / 2, BassCircleRadius + (MainCircleRadius - BaseCircleRadius), VizColors[3]);
+				DrawCircleLines(ScreenSize.x / 2, ScreenSize.y / 2, std::min(BassCircleRadius + (MainCircleRadius - BaseCircleRadius), 450.0f), VizColors[3]);
 			}
 
 			if (CompiledSamples[0][CurrentSampleIndex] * 1000.0f < -200.0f) VidSpeed = 1;
